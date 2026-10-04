@@ -50,6 +50,8 @@ docker compose --env-file deploy\.env `
 
 `bootstrap` 会从空白模板建立学校工作区，`admin-bootstrap` 会创建管理员。重复部署时，如果管理员声明没有变化则不写库；密码或角色变化时会更新账户并撤销旧会话。`deploy/secrets/` 已被 Git 和 Docker 构建上下文排除。
 
+Linux 上通过 Compose 文件型 secret 挂载时，`admin-bootstrap` 容器以 UID 10001 运行，宿主机密码文件必须允许该 UID 读取。例如在写入后执行 `sudo chown 10001:10001 deploy/secrets/admin_password` 和 `sudo chmod 600 deploy/secrets/admin_password`；不要把密码文件改成全员可读。
+
 打开 `http://127.0.0.1:8765`。首次进入后依次完成：登录、基础数据导入、规则确认、任务创建、任务中心观察、结果诊断和交付包下载。
 
 对外演示优先创建限时只读账号，不要复用管理员账号。以下示例创建 72 小时后自动失效的账号；到期检查由服务端在登录和每次会话解析时执行，尚未结束的旧会话也会立即失效：
@@ -78,7 +80,7 @@ docker compose --env-file deploy\.env -f deploy\compose.yaml -f deploy\compose.l
 ## 3. 生产 HTTPS
 
 1. 将域名 A/AAAA 记录解析到服务器。
-2. 在 `deploy/.env` 设置真实 `SCHEDULER_DOMAIN`、`CADDY_EMAIL`、管理员用户名和随机限流密钥；在 `deploy/secrets/admin_password` 写入管理员密码并限制为仅部署账户可读。
+2. 在 `deploy/.env` 设置真实 `SCHEDULER_DOMAIN`、`CADDY_EMAIL`、管理员用户名和随机限流密钥；在 `deploy/secrets/admin_password` 写入管理员密码并按上述容器 UID 设置读取权限。
 3. 保持 `SCHEDULER_COOKIE_SECURE=true`、`SCHEDULER_ALLOW_INSECURE_HTTP=false`、`SCHEDULER_ENABLE_HSTS=true`。
 4. 只信任受控反向代理；若不用 Caddy，将 `SCHEDULER_TRUST_PROXY_HEADERS` 设为 `false`。
 5. 云防火墙只开放 80/443；应用端口继续绑定 `127.0.0.1`。

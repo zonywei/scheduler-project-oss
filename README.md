@@ -8,7 +8,7 @@
 
 The web workspace includes a WebMCP progressive enhancement for compatible browsers. Five structured tools let a browser agent inspect project readiness, review rules, diagnose deterministic conflicts, save a server-validated rule draft for human approval, and prepare the shared Solve view. The tools deliberately do not activate rules, start a solve, or publish a timetable; those consequential steps remain visible human decisions.
 
-Implementation and challenge-period provenance are documented in [`docs/webmcp_challenge_2026.md`](docs/webmcp_challenge_2026.md). The live product continues to work in browsers without WebMCP support.
+The live product continues to work in browsers without WebMCP support.
 
 ## 产品化方向
 
@@ -16,7 +16,7 @@ Implementation and challenge-period provenance are documented in [`docs/webmcp_c
 
 Phase 0 已补齐版本化规则草案、OpenAI-compatible 国产模型适配边界、Python 3.14 文件上传兼容、项目安装元数据和一致的发布解释器入口，详见 [`docs/productization_phase0.md`](docs/productization_phase0.md)。
 
-Phase 1 单校 SaaS 底座已实现：租户化 SQLite WAL、不可变工作区版本、审计账本、密码会话与 CSRF、服务端 RBAC、持久化 Job/独立 Worker、国产模型多供应商路由、配额与成本账本，以及登录/任务中心/AI 服务的前端闭环。数据合同见 [`docs/productization_phase1_contract.md`](docs/productization_phase1_contract.md)，发布候选证据见 [`docs/productization_phase1_release.md`](docs/productization_phase1_release.md)，部署运维见 [`docs/deployment_and_operations.md`](docs/deployment_and_operations.md)，商业与核心资产边界见 [`docs/security_and_commercialization.md`](docs/security_and_commercialization.md)。
+Phase 1 单校 SaaS 底座已实现：租户化 SQLite WAL、不可变工作区版本、审计账本、密码会话与 CSRF、服务端 RBAC、持久化 Job/独立 Worker、国产模型多供应商路由、配额与成本账本，以及登录/任务中心/AI 服务的前端闭环。数据合同见 [`docs/productization_phase1_contract.md`](docs/productization_phase1_contract.md)，部署运维见 [`docs/deployment_and_operations.md`](docs/deployment_and_operations.md)。
 
 ## 单校 SaaS 本地启动
 
