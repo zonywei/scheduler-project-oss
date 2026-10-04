@@ -1,0 +1,57 @@
+profile_id: junior_day_school
+name: 通用初中走读模板
+stage: junior
+campuses:
+  - main
+tags:
+  - excel_friendly
+  - day_school
+calendar:
+  teaching_days:
+    - 星期一
+    - 星期二
+    - 星期三
+    - 星期四
+    - 星期五
+  night_days: []
+  period_groups:
+    - id: morning
+      label: 上午
+      periods:
+        - id: morning.1
+          label: 上午1
+        - id: morning.2
+          label: 上午2
+        - id: morning.3
+          label: 上午3
+        - id: morning.4
+          label: 上午4
+    - id: afternoon
+      label: 下午
+      periods:
+        - id: afternoon.1
+          label: 下午1
+        - id: afternoon.2
+          label: 下午2
+        - id: afternoon.3
+          label: 下午3
+    - id: after_school
+      label: 课后服务
+      periods:
+        - id: after_school.1
+          label: 课后服务1
+rule_instances:
+  - id: junior.day.am1_pm1_mutex
+    template_id: day.am1_pm1_mutex
+    enabled: true
+    mode: hard
+    target_scope: weekday_day_classes
+    params:
+      days:
+        - 星期一
+        - 星期二
+        - 星期三
+        - 星期四
+        - 星期五
+metadata:
+  fixture_role: anonymous_cross_school_contract

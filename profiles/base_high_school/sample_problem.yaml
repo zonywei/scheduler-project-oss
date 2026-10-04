@@ -1,0 +1,49 @@
+classes:
+  - 高一1班
+  - 高一2班
+class_subject_teachers:
+  - class: 高一1班
+    subject: 语文
+    teacher: 匿名语文A
+  - class: 高一1班
+    subject: 数学
+    teacher: 匿名数学A
+  - class: 高一2班
+    subject: 语文
+    teacher: 匿名语文B
+  - class: 高一2班
+    subject: 数学
+    teacher: 匿名数学B
+available_slots:
+  - day: 星期一
+    block: 上午
+    period: 1
+  - day: 星期一
+    block: 下午
+    period: 1
+  - day: 星期日
+    block: 晚自习
+    period: 1
+subject_requirements:
+  - class: 高一1班
+    subject: 语文
+    early: 0
+    weekday: 4
+    weekend: 1
+  - class: 高一1班
+    subject: 数学
+    early: 0
+    weekday: 4
+    weekend: 1
+  - class: 高一2班
+    subject: 语文
+    early: 0
+    weekday: 4
+    weekend: 1
+  - class: 高一2班
+    subject: 数学
+    early: 0
+    weekday: 4
+    weekend: 1
+academic_tables:
+  after_school: []

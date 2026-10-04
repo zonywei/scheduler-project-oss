@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>晚自习规则 · 排课中枢</title>
+  <link rel="stylesheet" href="../assets/command-center.css">
+</head>
+<body class="page-screen page-nl">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">排</div>
+        <div>
+          <div class="brand-title">排课中枢</div>
+          <div class="brand-subtitle">Scheduler Command</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="排课流程">
+        <a class="nav-link" href="../index.html"><span class="nav-num">1</span><span>项目工作台</span></a>
+        <a class="nav-link" href="02-data-intake.html"><span class="nav-num">2</span><span>数据准备</span></a>
+        <a class="nav-link" href="01-workbench.html"><span class="nav-num">3</span><span>规则与校验</span></a>
+        <a class="nav-link is-active" href="03-rule-intake.html"><span class="nav-num">4</span><span>晚自习规则</span></a>
+        <a class="nav-link" href="05-solver-run.html"><span class="nav-num">5</span><span>求解计算</span></a>
+        <a class="nav-link" href="04-diagnostics.html"><span class="nav-num">6</span><span>方案诊断</span></a>
+        <a class="nav-link" href="07-timetable-preview.html"><span class="nav-num">7</span><span>课表预览</span></a>
+        <a class="nav-link" href="06-results-delivery.html"><span class="nav-num">8</span><span>结果交付</span></a>
+      </nav>
+            <div class="advanced">
+        <div class="section-label">高级工具</div>
+        <a class="tool-link" href="04-diagnostics.html">诊断规则</a>
+        <a class="tool-link" href="07-timetable-preview.html">课表预览</a>
+        <a class="tool-link" href="06-results-delivery.html">历史记录</a>
+      </div>
+      <div class="side-footer">
+        <button class="side-action" data-toast="已刷新项目状态">刷新状态</button>
+        <div class="side-user">
+          <span class="avatar">教</span>
+          <span><strong>教务管理员</strong><small>年级排课组</small></span>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+      <div class="project-chip">
+        <strong>2024-2025 学年 第二学期排课项目</strong>
+        <span class="status-pill ok">可求解</span>
+      </div>
+      <div class="top-meta">
+        <span>同步于 23:35</span>
+        <button class="ghost-btn" data-toast="后台同步完成">同步</button>
+      </div>
+    </header>
+      <main class="content">
+        <section class="page-title">
+          <div><div class="eyebrow">晚自习规则</div><h1>自然语言规则录入</h1><p>把年级主任的口头要求解析成可复核的规则草稿。</p></div>
+          <div class="title-actions"><button class="btn primary" data-toast="规则草稿已保存">保存草稿</button></div>
+        </section>
+        <section class="screen-grid nl-grid">
+          <section class="panel">
+            <div class="panel-head"><h2>录入规则</h2></div>
+            <form class="nl-form" data-nl-form>
+              <textarea name="rule_text" placeholder="例如：匿名年级 9 班周三晚自习第一节必须安排数学，教师A不能连续两晚值班。"></textarea>
+              <button class="btn primary" type="submit">解析为规则</button>
+            </form>
+            <div data-rule-draft class="draft-box"><span>规则解析结果会显示在这里</span></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>已识别规则草稿</h2></div>
+            <div class="rule-stack">
+              <div class="rule-card"><strong>匿名年级 9 班 · 周三晚自习</strong><span>第一节优先安排数学</span><b class="badge warn">待确认</b></div>
+              <div class="rule-card"><strong>教师A · 值班节奏</strong><span>不能连续两晚值班</span><b class="badge ok">已映射</b></div>
+              <div class="rule-card"><strong>实验班 · 学科平衡</strong><span>晚自习两天内不重复同学科</span><b class="badge blue">可试跑</b></div>
+            </div>
+          </section>
+          <section class="panel span-all">
+            <div class="panel-head"><h2>覆盖范围预览</h2></div>
+            <div class="week-grid">
+              <div><b>周一</b><span>语文 / 数学 / 自修</span></div><div><b>周二</b><span>英语 / 物理 / 自修</span></div><div><b>周三</b><span class="accent">数学 / 化学 / 自修</span></div><div><b>周四</b><span>英语 / 生物 / 自修</span></div><div><b>周五</b><span>综合 / 班会 / 自修</span></div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../assets/command-center.js"></script>
+</body>
+</html>

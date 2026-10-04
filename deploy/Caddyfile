@@ -1,0 +1,15 @@
+{
+	email {$CADDY_EMAIL}
+}
+
+{$SCHEDULER_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy web:8765
+	header {
+		-Server
+	}
+	log {
+		output stdout
+		format json
+	}
+}

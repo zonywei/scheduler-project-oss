@@ -1,0 +1,175 @@
+io:
+  day_night_link:
+    night_requires_day_mode: soft
+    sun_night_no_mon_am1_mode: soft
+    sun_pm_night_no_mon_am_mode: soft
+  day:
+    duty_joint_constraints:
+      male_total_target_mode: soft
+      w_male_total_target_deviation: 2500
+rules:
+  rule_application:
+    personal:
+      enable_ytt_sun_pref:
+        target_scope: selected_teachers
+        subject_groups: []
+        subject_group_teachers: []
+        exception_teachers: []
+        exception_subject_groups: []
+        exception_mode: exclude
+        exception_note: ''
+  personalized_constraints:
+    teacher_targets:
+      ytt: []
+    enable_ytt_sun_pref: true
+    ytt_sun_pref_mode: soft
+    w_ytt_no_sun_night: 2500
+  checkin:
+    per_teacher_max_times: 2
+    require_teacher_has_class_that_day_mode: soft
+    w_require_teacher_has_class_that_day: 20000
+temporary_rules:
+  active: []
+academic_affairs:
+  tables:
+    substitutions: []
+    exam_duties: []
+    after_school: []
+    walking_classes: []
+    rooms: []
+    teaching_research: []
+    teacher_leave: []
+    class_events: []
+    club_activities: []
+    lunch_duty: []
+    boarding_dorm: []
+    lab_reservations: []
+    equipment_loans: []
+    public_lessons: []
+    teaching_inspections: []
+    parent_meetings: []
+    grade_assemblies: []
+    makeup_lessons: []
+    exam_marking: []
+    student_support: []
+    sport_events: []
+    safety_drills: []
+    teacher_training: []
+    timetable_changes: []
+    subject_group_tasks: []
+    campus_supervision: []
+  settings:
+    substitution_approval_enabled: true
+    exam_invigilation_balance_enabled: true
+    after_school_service_enabled: true
+    walking_class_enabled: true
+    teacher_daily_task_warning_threshold: 4
+change_audit:
+  entries:
+  - id: cfg_20260506022243_48aa9e02
+    timestamp: '2026-05-06T02:22:43+00:00'
+    actor: codex
+    source: rules.configure
+    reason: 提高晚查寝当天有晚自习权重，优先减少发布前 soft 例外
+    changes:
+    - label: checkin.w_require_teacher_has_class_that_day
+      store: rules
+      path:
+      - checkin
+      - w_require_teacher_has_class_that_day
+      full_path: rules.checkin.w_require_teacher_has_class_that_day
+      before_exists: true
+      before: 3000
+      after: 20000
+  - id: cfg_20260506014251_303148f6
+    timestamp: '2026-05-06T01:42:51+00:00'
+    actor: codex
+    source: diagnosis.joint_feasibility
+    reason: 联合模式正式求解无解；诊断证明男班主任查寝总次数目标需软化，且白天-晚自习联动三条硬链路降为可审计软约束后可生成候选课表。
+    changes:
+    - label: 白天无课不得晚自习/晚查寝模式
+      store: io
+      path:
+      - day_night_link
+      - night_requires_day_mode
+      full_path: io.day_night_link.night_requires_day_mode
+      before_exists: false
+      before: null
+      after: soft
+    - label: 周日晚自习后周一上午1禁排模式
+      store: io
+      path:
+      - day_night_link
+      - sun_night_no_mon_am1_mode
+      full_path: io.day_night_link.sun_night_no_mon_am1_mode
+      before_exists: false
+      before: null
+      after: soft
+    - label: 周日下午+周日晚自习后周一上午禁排模式
+      store: io
+      path:
+      - day_night_link
+      - sun_pm_night_no_mon_am_mode
+      full_path: io.day_night_link.sun_pm_night_no_mon_am_mode
+      before_exists: false
+      before: null
+      after: soft
+    - label: 男班主任查寝周目标模式
+      store: io
+      path:
+      - day
+      - duty_joint_constraints
+      - male_total_target_mode
+      full_path: io.day.duty_joint_constraints.male_total_target_mode
+      before_exists: false
+      before: null
+      after: soft
+    - label: 男班主任查寝目标偏离罚分
+      store: io
+      path:
+      - day
+      - duty_joint_constraints
+      - w_male_total_target_deviation
+      full_path: io.day.duty_joint_constraints.w_male_total_target_deviation
+      before_exists: false
+      before: null
+      after: 2500
+  - id: cfg_20260506011339_d38b02a6
+    timestamp: '2026-05-06T01:13:39+00:00'
+    actor: codex
+    source: diagnosis.checkin.same_day_soft
+    reason: 夜间正式求解无可行解；诊断试跑证明只需将晚查寝教师当天有晚自习从硬约束降为可审计软约束即可生成候选课表。
+    changes:
+    - label: 晚查寝教师当天有晚自习模式
+      store: rules
+      path:
+      - checkin
+      - require_teacher_has_class_that_day_mode
+      full_path: rules.checkin.require_teacher_has_class_that_day_mode
+      before_exists: false
+      before: null
+      after: soft
+    - label: 晚查寝当天无晚自习罚分权重
+      store: rules
+      path:
+      - checkin
+      - w_require_teacher_has_class_that_day
+      full_path: rules.checkin.w_require_teacher_has_class_that_day
+      before_exists: false
+      before: null
+      after: 3000
+  - id: cfg_20260505225603_9612b414
+    timestamp: '2026-05-05T22:56:03+00:00'
+    actor: codex
+    source: readiness.remediation
+    reason: 晚查寝男班主任容量不足，按预演将周上限调到 2 次以清除正式求解阻断
+    changes:
+    - label: 班主任每周最大晚查寝次数
+      store: rules
+      path:
+      - checkin
+      - per_teacher_max_times
+      full_path: rules.checkin.per_teacher_max_times
+      before_exists: false
+      before: null
+      after: 2

@@ -1,0 +1,9 @@
+services:
+  web:
+    environment:
+      SCHEDULER_COOKIE_SECURE: "false"
+      SCHEDULER_ALLOW_INSECURE_HTTP: "true"
+      SCHEDULER_ENABLE_HSTS: "false"
+      SCHEDULER_TRUST_PROXY_HEADERS: "false"
+    ports:
+      - "127.0.0.1:${SCHEDULER_PORT:-8765}:8765"

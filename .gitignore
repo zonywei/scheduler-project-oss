@@ -1,0 +1,59 @@
+# outputs
+outputs/
+outputs/**
+scheduler/outputs/
+scheduler/outputs/**
+
+# runtime logs / temp artifacts
+*.log
+temp_*
+scheduler/config/io_repair_*.yaml
+scheduler/config/io_tmp_*.yaml
+verification/experiments/
+verification/experiments/**
+tmp/
+tmp/**
+.cache/
+.cache/**
+cache/
+cache/**
+
+# generated UI/QA snapshots should live under output/web/screenshots/
+output/web/screenshots/
+output/web/screenshots/**
+output/web/audit-*/
+output/web/audit-*/**
+/*.png
+/*snapshot*.md
+
+# python cache
+__pycache__/
+*.pyc
+build/
+dist/
+*.egg-info/
+/var/
+/deploy/.env
+/deploy/secrets/
+
+# virtual env
+.venv/
+.venv/**
+.venv_verify/
+.venv_verify/**
+
+# local input data (not distributed in open-source repo)
+scheduler/教师定位表.xlsx
+scheduler/白天规则.xlsx
+
+# editor
+.vscode/
+.vscode/**
+
+# generated verification metadata
+verification/logs/
+
+# local agent/browser release artifacts
+/.codex-audit/
+/.playwright-cli/
+/workbuddy-skill-release/

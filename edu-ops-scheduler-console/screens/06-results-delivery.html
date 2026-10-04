@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>结果交付 · 排课中枢</title>
+  <link rel="stylesheet" href="../assets/command-center.css">
+</head>
+<body class="page-screen page-release">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">排</div>
+        <div>
+          <div class="brand-title">排课中枢</div>
+          <div class="brand-subtitle">Scheduler Command</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="排课流程">
+        <a class="nav-link" href="../index.html"><span class="nav-num">1</span><span>项目工作台</span></a>
+        <a class="nav-link" href="02-data-intake.html"><span class="nav-num">2</span><span>数据准备</span></a>
+        <a class="nav-link" href="01-workbench.html"><span class="nav-num">3</span><span>规则与校验</span></a>
+        <a class="nav-link" href="03-rule-intake.html"><span class="nav-num">4</span><span>晚自习规则</span></a>
+        <a class="nav-link" href="05-solver-run.html"><span class="nav-num">5</span><span>求解计算</span></a>
+        <a class="nav-link" href="04-diagnostics.html"><span class="nav-num">6</span><span>方案诊断</span></a>
+        <a class="nav-link" href="07-timetable-preview.html"><span class="nav-num">7</span><span>课表预览</span></a>
+        <a class="nav-link is-active" href="06-results-delivery.html"><span class="nav-num">8</span><span>结果交付</span></a>
+      </nav>
+      <div class="advanced">
+        <div class="section-label">高级工具</div>
+        <a class="tool-link" href="04-diagnostics.html">诊断规则</a>
+        <a class="tool-link" href="07-timetable-preview.html">课表预览</a>
+        <a class="tool-link" href="06-results-delivery.html">历史记录</a>
+      </div>
+      <div class="side-footer">
+        <button class="side-action" data-toast="已刷新项目状态">刷新状态</button>
+        <div class="side-user">
+          <span class="avatar">教</span>
+          <span><strong>教务管理员</strong><small>年级排课组</small></span>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="project-chip">
+          <strong>2024-2025 学年 第二学期排课项目</strong>
+          <span class="status-pill ok">可交付</span>
+        </div>
+        <div class="top-meta">
+          <span>同步于 23:35</span>
+          <button class="ghost-btn" data-toast="后台同步完成">同步</button>
+        </div>
+      </header>
+      <main class="content">
+        <section class="page-title">
+          <div><div class="eyebrow">结果交付</div><h1>正式结果材料</h1><p>集中查看课表文件、诊断材料、交付清单和运行状态；学校审批归档走现有 OA 或线下流程。</p></div>
+          <div class="title-actions"><button class="btn primary" data-toast="交付包已重新生成">重新生成结果包</button></div>
+        </section>
+        <section class="status-strip compact">
+          <div class="metric ok"><span>交付状态</span><strong>ready</strong><small>以 status.json 为准</small></div>
+          <div class="metric ok"><span>课表文件</span><strong>3</strong><small>班级 / 教师 / 场地</small></div>
+          <div class="metric blue"><span>根目录材料</span><strong>2</strong><small>manifest / status</small></div>
+          <div class="metric"><span>历史批次</span><strong>2</strong><small>保留最新正式结果</small></div>
+        </section>
+        <section class="screen-grid two-one">
+          <section class="panel span-main">
+            <div class="panel-head"><h2>交付文件</h2></div>
+            <div class="table-scroll"><table class="dense-table"><thead><tr><th>文件</th><th>用途</th><th>时间</th><th>大小</th><th>状态</th></tr></thead><tbody>
+              <tr><td>班级课表.xlsx</td><td>班主任查看</td><td>10:24</td><td>256 KB</td><td><span class="badge ok">已生成</span></td></tr>
+              <tr><td>教师课表.xlsx</td><td>任课教师查看</td><td>10:24</td><td>312 KB</td><td><span class="badge ok">已生成</span></td></tr>
+              <tr><td>场地课表.pdf</td><td>场地负责人查看</td><td>10:24</td><td>186 KB</td><td><span class="badge ok">已生成</span></td></tr>
+              <tr><td>排课结果数据.zip</td><td>系统归档与交付</td><td>10:24</td><td>1.2 MB</td><td><span class="badge ok">已生成</span></td></tr>
+            </tbody></table></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>结果包入口</h2></div>
+            <div class="gate-list">
+              <div><span></span><strong>delivery_manifest.json</strong><b>可读</b></div>
+              <div><span></span><strong>status.json</strong><b>唯一</b></div>
+              <div><span></span><strong>package_integrity</strong><b>ok</b></div>
+            </div>
+          </section>
+          <section class="panel span-main">
+            <div class="panel-head"><h2>交付说明</h2></div>
+            <div class="notice blue"><strong>正式材料只保留当前入口</strong><span>结果包根目录提供机器可读清单和状态文件；诊断材料、候选信息和运行元数据保留在归档目录中。</span></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>下一步</h2></div>
+            <div class="action-stack compact-actions">
+              <button class="btn primary" data-toast="已下载正式结果包">下载结果包</button>
+              <button class="btn" data-toast="已打开运行状态">查看状态</button>
+              <button class="btn" data-toast="已打开历史批次">历史批次</button>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../assets/command-center.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>排课中枢 · 项目工作台</title>
+  <link rel="stylesheet" href="assets/command-center.css">
+</head>
+<body class="page-overview">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">排</div>
+        <div>
+          <div class="brand-title">排课中枢</div>
+          <div class="brand-subtitle">Scheduler Command</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="排课流程">
+        <a class="nav-link is-active" href="index.html"><span class="nav-num">1</span><span>项目工作台</span></a>
+        <a class="nav-link" href="screens/02-data-intake.html"><span class="nav-num">2</span><span>数据准备</span></a>
+        <a class="nav-link" href="screens/01-workbench.html"><span class="nav-num">3</span><span>规则与校验</span></a>
+        <a class="nav-link" href="screens/03-rule-intake.html"><span class="nav-num">4</span><span>晚自习规则</span></a>
+        <a class="nav-link" href="screens/05-solver-run.html"><span class="nav-num">5</span><span>求解计算</span></a>
+        <a class="nav-link" href="screens/04-diagnostics.html"><span class="nav-num">6</span><span>方案诊断</span></a>
+        <a class="nav-link" href="screens/07-timetable-preview.html"><span class="nav-num">7</span><span>课表预览</span></a>
+        <a class="nav-link" href="screens/06-results-delivery.html"><span class="nav-num">8</span><span>结果交付</span></a>
+      </nav>
+            <div class="advanced">
+        <div class="section-label">高级工具</div>
+        <a class="tool-link" href="screens/04-diagnostics.html">诊断规则</a>
+        <a class="tool-link" href="screens/07-timetable-preview.html">课表预览</a>
+        <a class="tool-link" href="screens/06-results-delivery.html">历史记录</a>
+      </div>
+      <div class="side-footer">
+        <button class="side-action" data-toast="已刷新项目状态">刷新状态</button>
+        <div class="side-user">
+          <span class="avatar">教</span>
+          <span><strong>教务管理员</strong><small>年级排课组</small></span>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+      <div class="project-chip">
+        <strong>2024-2025 学年 第二学期排课项目</strong>
+        <span class="status-pill ok">可求解</span>
+      </div>
+      <div class="top-meta">
+        <span>同步于 23:35</span>
+        <button class="ghost-btn" data-toast="后台同步完成">同步</button>
+      </div>
+    </header>
+      <main class="content">
+        <section class="page-title">
+          <div>
+            <div class="eyebrow">项目工作台</div>
+            <h1>排课项目状态总览</h1>
+            <p>先看数据是否完整、能否求解、当前进度和结果材料。</p>
+          </div>
+          <div class="title-actions">
+            <a class="btn primary" href="screens/05-solver-run.html">开始排课</a>
+            <a class="btn" href="screens/07-timetable-preview.html">课表预览</a>
+            <button class="btn" data-toast="项目状态已刷新">刷新</button>
+          </div>
+        </section>
+
+        <section class="status-strip">
+          <div class="metric danger"><span>数据完整度</span><strong>98%</strong><small>1 个场地容量警告</small></div>
+          <div class="metric ok"><span>可以开始求解</span><strong>是</strong><small>求解可启动，交付状态单独判断</small></div>
+          <div class="metric blue"><span>当前求解</span><strong>第 3 轮</strong><small>共 10 轮，剩余约 18 分钟</small></div>
+          <div class="metric green"><span>当前最优结果</span><strong>92.6</strong><small>23 个软约束冲突</small></div>
+          <div class="metric "><span>输出文件</span><strong>4 个</strong><small>课表与交付包已生成</small></div>
+        </section>
+
+        <section class="flow-strip" aria-label="排课流程">
+          <div class="flow-card done"><span>1</span><strong>数据</strong><small>已读取基础表</small></div>
+          <div class="flow-card done"><span>2</span><strong>规则</strong><small>128 条规则</small></div>
+          <div class="flow-card active"><span>3</span><strong>求解</strong><small>后台运行</small></div>
+          <div class="flow-card"><span>4</span><strong>预览</strong><small>审阅课表</small></div>
+          <div class="flow-card"><span>5</span><strong>导出</strong><small>待确认</small></div>
+        </section>
+
+        <section class="dashboard-grid">
+          <section class="panel checklist-panel">
+            <div class="panel-head">
+              <div><h2>数据就绪检查清单</h2><p>求解可启动，但仍有 2 条警告需要跟踪。</p></div>
+              <a class="text-link" href="screens/02-data-intake.html">重新检查</a>
+            </div>
+            <div class="check-list">
+              <div class="check-row ok"><span></span><div><strong>基础数据</strong><small>学期信息、教学周、节次、场地、班级、教师等</small></div><b>完整</b></div>
+              <div class="check-row ok"><span></span><div><strong>课程数据</strong><small>课程信息、课程类型、周课时、开课班级等</small></div><b>完整</b></div>
+              <div class="check-row ok"><span></span><div><strong>教师数据</strong><small>教师任课、可用时间、教师偏好等</small></div><b>完整</b></div>
+              <div class="check-row warn"><span></span><div><strong>场地数据</strong><small>实验楼 201 容量不足，需要人工确认</small></div><b>2 条警告</b></div>
+              <div class="check-row ok"><span></span><div><strong>规则配置</strong><small>已启用 128 条规则，覆盖 hard / soft 开关</small></div><b>完整</b></div>
+              <div class="check-row ok"><span></span><div><strong>业务约束</strong><small>连堂、合班、教研、晚自习规则已合并</small></div><b>完整</b></div>
+            </div>
+          </section>
+
+          <section class="panel solve-card">
+            <div class="panel-head"><div><h2>求解进度</h2><p>在后台运行，不影响其它操作。</p></div><span class="badge blue">进行中</span></div>
+            <div class="big-progress">
+              <div><strong>正在进行第 3 轮求解...</strong><small>已用时 12 分钟，预计剩余 18 分钟</small></div>
+              <b>32%</b>
+            </div>
+            <div class="progress-track"><i style="--p:32%"></i></div>
+            <div class="notice blue">求解运行中，可以继续进行方案审阅或其它操作。</div>
+            <dl class="mini-stats"><div><dt>已评估方案数</dt><dd>15,842</dd></div><div><dt>当前最优冲突数</dt><dd>23</dd></div><div><dt>内存使用</dt><dd>1.2 GB / 8 GB</dd></div></dl>
+            <a class="text-link" href="screens/05-solver-run.html">进入求解控制</a>
+          </section>
+
+          <section class="panel diagnostics-card">
+            <div class="panel-head"><h2>诊断结果</h2></div>
+            <div class="diag-summary">
+              <span class="danger">0 严重问题</span>
+              <span class="warn">2 警告</span>
+              <span class="blue">5 提示</span>
+            </div>
+            <div class="compact-list">
+              <div><i class="dot warn"></i><span>教师A在周三上午第3节有时间冲突</span><a href="screens/04-diagnostics.html">查看</a></div>
+              <div><i class="dot warn"></i><span>场地匿名场地A在周二第6节容量不足</span><a href="screens/04-diagnostics.html">查看</a></div>
+              <div><i class="dot blue"></i><span>匿名班级A周课时偏高，共 38 节</span><a href="screens/04-diagnostics.html">查看</a></div>
+            </div>
+          </section>
+
+          <section class="panel result-card">
+            <div class="panel-head"><div><h2>课表预览</h2><p>独立审阅班级、教师和场地视图。</p></div><a class="text-link" href="screens/07-timetable-preview.html">打开课表</a></div>
+            <div class="score-row"><strong>92.6</strong><small>综合评分</small><span class="badge ok">较上次 +1.3</span></div>
+            <div class="sparkline"><i style="height:38%"></i><i style="height:54%"></i><i style="height:58%"></i><i style="height:65%"></i><i style="height:70%"></i><i style="height:76%"></i><i style="height:82%"></i><i style="height:80%"></i><i style="height:84%"></i></div>
+          </section>
+
+          <section class="panel files-card">
+            <div class="panel-head"><h2>输出文件</h2></div>
+            <div class="file-list">
+              <div><span class="file xls">XLS</span><strong>班级课表.xlsx</strong><small>256 KB</small><b>已生成</b></div>
+              <div><span class="file xls">XLS</span><strong>教师课表.xlsx</strong><small>312 KB</small><b>已生成</b></div>
+              <div><span class="file pdf">PDF</span><strong>场地课表.pdf</strong><small>186 KB</small><b>已生成</b></div>
+              <div><span class="file zip">ZIP</span><strong>排课结果数据.zip</strong><small>1.2 MB</small><b>已生成</b></div>
+            </div>
+          </section>
+
+          <section class="panel runs-card">
+            <div class="panel-head"><h2>最近运行记录</h2></div>
+            <table class="dense-table"><thead><tr><th>开始时间</th><th>方案名称</th><th>轮次</th><th>状态</th><th>评分</th><th>操作</th></tr></thead><tbody>
+              <tr><td>今天 10:06</td><td>自动求解 - 第3轮</td><td>3 / 10</td><td><span class="badge blue">进行中</span></td><td>92.6</td><td><a href="screens/05-solver-run.html">查看</a></td></tr>
+              <tr><td>今天 09:38</td><td>自动求解 - 第2轮</td><td>2 / 10</td><td><span class="badge ok">已完成</span></td><td>91.3</td><td><a href="screens/07-timetable-preview.html">查看</a></td></tr>
+              <tr><td>昨天 16:45</td><td>手动求解</td><td>1 / 1</td><td><span class="badge ok">已完成</span></td><td>76.4</td><td><a href="screens/07-timetable-preview.html">查看</a></td></tr>
+            </tbody></table>
+          </section>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="assets/command-center.js"></script>
+</body>
+</html>

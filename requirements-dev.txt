@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Developer/test gate only. Runtime deployments can install requirements.txt.
+pytest>=8.0,<9.0

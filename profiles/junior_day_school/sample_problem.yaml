@@ -1,0 +1,38 @@
+classes:
+  - 七年级1班
+class_subject_teachers:
+  - class: 七年级1班
+    subject: 语文
+    teacher: 匿名初中语文
+  - class: 七年级1班
+    subject: 数学
+    teacher: 匿名初中数学
+available_slots:
+  - day: 星期一
+    block: 上午
+    period: 1
+  - day: 星期三
+    block: 下午
+    period: 2
+  - day: 星期五
+    block: 课后服务
+    period: 1
+subject_requirements:
+  - class: 七年级1班
+    subject: 语文
+    early: 0
+    weekday: 5
+    weekend: 0
+  - class: 七年级1班
+    subject: 数学
+    early: 0
+    weekday: 5
+    weekend: 0
+academic_tables:
+  after_school:
+    - 课程名称: 数学答疑
+      星期: 星期五
+      时段: 课后服务1
+      负责教师: 匿名初中数学
+      场地: 七年级1班
+      状态: 待确认

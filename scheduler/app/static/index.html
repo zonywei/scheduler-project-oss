@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>课有序 · CourseOrder AI 智能排课</title>
+  <meta name="description" content="AI 理解学校个性化排课规则，工业级求解引擎生成可执行课表">
+  <link rel="icon" type="image/png" href="/assets/brand/courseorder-mark-v2.png?v=20260730-brand-1">
+  <link rel="stylesheet" href="/vendor/remixicon/remixicon.css?v=4.9.1">
+  <link rel="stylesheet" href="/styles.css?v=20260726-edu-simple-1">
+  <link rel="stylesheet" href="/formal-v2.css?v=20260730-formal-11">
+  <link rel="stylesheet" href="/conversation.css?v=20260729-conversation-4">
+  <link rel="stylesheet" href="/visual-polish.css?v=20260729-frosted-1">
+</head>
+<body class="home-page page-home" data-ui-source="edu-ops-scheduler-console">
+  <section id="welcomeGate" class="welcome-gate" aria-labelledby="welcomeTitle">
+    <header class="welcome-header">
+      <a class="welcome-brand" href="#welcomeTop" aria-label="课有序首页"><img src="/assets/brand/courseorder-mark-v2.png?v=20260730-brand-1" alt=""><span>课有序</span></a>
+      <nav aria-label="产品介绍">
+        <a href="#welcomeAi">AI 排课</a>
+        <a href="#welcomeRules">个性化规则</a>
+        <a href="#welcomeBoundary">数据边界</a>
+      </nav>
+      <div class="welcome-header-actions">
+        <button id="welcomeLogin" class="button-outline" type="button">登录</button>
+        <button id="welcomeStart" type="button">开始排课</button>
+      </div>
+    </header>
+    <main id="welcomeTop" class="welcome-main">
+      <div class="welcome-copy" id="welcomeAi">
+        <p class="welcome-kicker">AI 个性化规则排课</p>
+        <h1 id="welcomeTitle"><span>不必让学校迁就固定规则，</span><span>让 AI 读懂你的排课要求</span></h1>
+        <p class="welcome-lead">用自然语言描述复杂需求，AI 将其整理为可检查、可编辑的规则；工业级求解引擎完成可行性校验与全局优化。</p>
+        <div class="welcome-cta-row">
+          <button id="welcomePrimary" type="button">开始排课</button>
+          <a class="button-outline" href="#welcomeFlow">查看完整流程</a>
+        </div>
+        <p class="welcome-proof">规则可编辑 · 影响可预览 · 版本可追溯 · 最终由教务确认</p>
+      </div>
+      <figure class="welcome-preview" id="welcomeRules">
+        <img src="/assets/formal-project-preview.png?v=20260729-courseorder-4" alt="课有序五阶段项目工作台预览">
+      </figure>
+    </main>
+    <section id="welcomeFlow" class="welcome-flow">
+      <p class="welcome-kicker">AI 排课贯穿核心流程</p>
+      <h2>从个性化需求到可发布课表</h2>
+      <p>AI 负责理解、追问和调整规则，工业级智能排课引擎负责全局安排；教务只需在关键节点检查、比较和确认。</p>
+      <div class="welcome-flow-grid" id="welcomeBoundary">
+        <article><b>1</b><strong>基础设置</strong><span>作息、教师定位、课时与固定事项</span></article>
+        <article><b>2</b><strong>规则设置</strong><span>默认规则、课表式设置与 AI 助手</span></article>
+        <article><b>3</b><strong>AI 智能排课</strong><span>工业级引擎校验并全局优化</span></article>
+        <article><b>4</b><strong>审查与优化</strong><span>AI 解释问题，确认后重新求解</span></article>
+        <article><b>5</b><strong>课表发布</strong><span>用户确认、格式下载与版本留痕</span></article>
+      </div>
+    </section>
+  </section>
+
+  <section id="authGate" class="auth-gate" aria-labelledby="loginTitle" hidden>
+    <div class="auth-showcase" aria-label="课有序产品介绍">
+      <header class="auth-product-brand">
+        <div><img src="/assets/brand/courseorder-mark-v2.png?v=20260730-brand-1" alt=""><strong>课有序</strong><span>AI 智能排课</span></div>
+        <small>CourseOrder AI</small>
+      </header>
+      <h2>懂规则的工业级智能排课系统</h2>
+      <figure class="auth-product-preview">
+        <img src="/assets/formal-project-preview.png?v=20260729-courseorder-4" alt="课有序排课项目工作台预览">
+      </figure>
+    </div>
+    <div class="auth-login-panel">
+      <button class="auth-help-button" type="button" data-action="open-login-help">登录帮助</button>
+      <div class="auth-card">
+        <h1 id="loginTitle">欢迎回来</h1>
+        <form id="loginForm" class="auth-form">
+          <label for="loginUsername">账号</label>
+          <input id="loginUsername" name="username" autocomplete="username" placeholder="请输入账号" required autofocus>
+          <label for="loginPassword">密码</label>
+          <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required>
+          <p id="loginError" class="auth-error" role="alert" hidden></p>
+          <button id="loginSubmit" type="submit">登录课有序</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell">
+    <aside class="rail sidebar" aria-label="主导航">
+      <div class="brand">
+        <img class="brand-mark brand-logo" src="/assets/brand/courseorder-mark-v2.png?v=20260730-brand-1" alt="课有序">
+        <div>
+          <p class="brand-title">课有序</p>
+          <p class="brand-caption">本学期排课工作台</p>
+        </div>
+      </div>
+      <nav class="nav-list nav" aria-label="排课流程">
+        <p class="nav-section-label">排课流程</p>
+        <button class="nav-item nav-link is-active active" type="button" data-view="overview">
+          <i class="nav-icon ri-checkbox-circle-line" aria-hidden="true"></i>
+          <span>项目概览</span>
+        </button>
+        <button class="nav-item nav-link" type="button" data-view="data">
+          <i class="nav-icon ri-settings-3-line" aria-hidden="true"></i>
+          <span>基础设置</span>
+        </button>
+        <button class="nav-item nav-link" type="button" data-view="rules">
+          <i class="nav-icon ri-book-open-line" aria-hidden="true"></i>
+          <span>规则中心</span>
+        </button>
+        <button class="nav-item nav-link" type="button" data-view="solve">
+          <i class="nav-icon ri-line-chart-line" aria-hidden="true"></i>
+          <span>求解与优化</span>
+        </button>
+        <button class="nav-item nav-link" type="button" data-view="results">
+          <i class="nav-icon ri-send-plane-line" aria-hidden="true"></i>
+          <span>课表发布</span>
+        </button>
+        <details id="navMore" class="nav-more">
+          <summary><i class="ri-arrow-right-s-line" aria-hidden="true"></i><span>更多工具</span></summary>
+          <div class="nav-more-list">
+            <button class="nav-item nav-link" type="button" data-view="jobs">
+              <span>排课记录</span>
+            </button>
+            <button class="nav-item nav-link" type="button" data-view="advanced">
+              <span>问题处理</span>
+            </button>
+          </div>
+        </details>
+        <p class="nav-section-label premium-nav-label"><i class="ri-vip-crown-2-line" aria-hidden="true"></i><span>高级会员</span></p>
+        <button class="nav-item nav-link premium-nav-item" type="button" data-view="conversation">
+          <i class="nav-icon ri-chat-ai-line" aria-hidden="true"></i>
+          <span>AI 对话排课</span>
+          <small>ADVANCED</small>
+        </button>
+      </nav>
+      <div class="sidebar-guide">
+        <button id="openGuideBtn" type="button" data-action="open-user-guide"><i class="ri-book-2-line" aria-hidden="true"></i><span>操作指南</span></button>
+      </div>
+      <div class="rail-footer sidebar-footer">
+        <div class="side-user">
+          <span class="avatar small" aria-hidden="true"></span>
+          <span><strong id="sideUserName">教务管理员</strong><small id="sideUserRole">年级排课组</small></span>
+        </div>
+        <div class="side-footer-actions">
+          <button id="refreshBtn" class="ghost-button" type="button" data-action="refresh"><i class="ri-refresh-line" aria-hidden="true"></i><span>刷新状态</span></button>
+          <button id="logoutBtn" class="ghost-button" type="button" data-action="logout" hidden><i class="ri-logout-box-r-line" aria-hidden="true"></i><span>退出</span></button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="workspace main">
+      <header class="topbar">
+        <div class="project-switcher">
+          <span class="project-label">2026-2027 学年第一学期排课</span>
+          <span id="globalRunBadge" class="run-badge">读取中</span>
+        </div>
+        <div class="topbar-actions">
+          <span id="webMcpStatus" class="run-badge webmcp-status" data-tone="info">WebMCP · checking</span>
+          <span id="lastUpdated" class="last-updated">尚未同步</span>
+          <select id="accessRoleSelect" class="role-select" aria-label="工作台身份">
+            <option value="academic_admin">教务管理员</option>
+            <option value="scheduler_operator">排课操作员</option>
+            <option value="grade_lead">年级组</option>
+            <option value="dorm_supervisor">宿管/值周</option>
+            <option value="viewer">只读查看</option>
+          </select>
+          <span id="authenticatedRole" class="authenticated-role" hidden></span>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="page-heading">
+          <div>
+            <p id="eyebrow" class="eyebrow">项目工作台</p>
+            <h1 id="pageTitle">正在读取排课项目</h1>
+            <p id="pageSubtitle">加载基础数据、规则、求解状态和结果材料。</p>
+          </div>
+          <div id="pageActions" class="page-actions"></div>
+        </section>
+
+        <section id="appContent" class="view-root" aria-live="polite"></section>
+      </main>
+    </div>
+  </div>
+
+  <div id="modalRoot" class="modal-backdrop" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <section id="commercialCapabilityAnchors" class="contract-anchors" data-version="20260513-affairs-console-1 20260513-director-ui-1" hidden>
+    <nav aria-label="教务主任工作台"><button type="button" data-view="home">教务主任工作台</button></nav>
+    <div>教师定位 规则设置 口头规则 冲突检测 求解运行 求解结果 教务工作台 课表风险评估 课表数据驾驶舱 课表微调沙盘 课表在线预览 建议试运行方案</div>
+    <section aria-label="主任决策看板">
+      <h2>主任决策看板</h2>
+      <div id="homeDirectorBoard"></div>
+      <div id="homeTodoList"></div>
+      <div id="homeQuickActions"></div>
+      <section id="bellSchedulePanel"><h3>作息节次</h3><button id="saveBellScheduleBtn" type="button">保存作息节次</button></section>
+    </section>
+    <section aria-label="结果交付">
+      <button id="resultReleaseAction" type="button">结果状态</button>
+      <div id="resultFormalCandidateNotice">推荐候选文件</div>
+      <div id="resultAvailability" class="result-availability"></div>
+      <div id="resultSolverQuality" class="result-solver-quality"></div>
+      <div id="resultDeliveryMaterials" class="result-delivery-materials"></div>
+      <h2>课表数据驾驶舱</h2>
+      <div id="scheduleStatistics" class="schedule-statistics"></div>
+      <h2>课表版本时间线</h2>
+      <div id="scheduleVersions" class="schedule-versions"></div>
+    </section>
+    <section aria-label="批量导入">
+      <button type="button">下载 Excel 模板</button>
+      <button id="downloadTeacherCsvTemplateBtn" type="button">下载表格模板</button>
+      <button type="button">下载全量工作簿</button>
+      <button type="button">导入工作簿</button>
+      <button type="button">导入表格</button>
+      <button id="downloadDayRuleTemplateBtn" type="button">白天规则模板</button>
+      <button id="importDayRuleFileBtn" type="button">导入白天规则</button>
+      <div id="teacherImportNotice"></div>
+      <input id="academicWorkbookInput" type="file" accept=".xlsx,.xls,.csv,text/csv">
+      <div id="academicWorkbookImportNotice"></div>
+      <input id="dayRuleFileInput" type="file" accept=".xlsx,.csv,text/csv">
+      <div id="dayRuleImportNotice"></div>
+      <input id="academicCsvInput" type="file" accept=".xlsx,.csv,text/csv">
+      <div id="academicImportNotice"></div>
+    </section>
+    <section aria-label="局部调课">
+      <h2>课表微调沙盘</h2>
+      <button type="button">预览微调影响</button>
+      <input id="manualAdjustmentChange">
+      <input id="manualAdjustClass">
+      <input id="leaveRepairTeacher">
+      <input id="leaveRepairDay">
+      <input id="leaveRepairSlot">
+    </section>
+  </section>
+
+  <script src="/app.js?v=20260730-formal-4"></script>
+  <script src="/formal-v2.js?v=20260730-formal-10"></script>
+  <script src="/conversation.js?v=20260730-conversation-5"></script>
+  <script src="/webmcp.js?v=20260904-challenge-1"></script>
+</body>
+</html>

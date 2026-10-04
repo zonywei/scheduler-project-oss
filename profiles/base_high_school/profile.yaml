@@ -1,0 +1,67 @@
+profile_id: base_high_school
+name: 通用高中模板
+stage: senior
+campuses:
+  - main
+tags:
+  - excel_friendly
+  - boarding_optional
+calendar:
+  teaching_days:
+    - 星期一
+    - 星期二
+    - 星期三
+    - 星期四
+    - 星期五
+    - 星期六
+    - 星期日
+  night_days:
+    - 星期一
+    - 星期二
+    - 星期三
+    - 星期四
+    - 星期五
+    - 星期日
+  period_groups:
+    - id: morning
+      label: 上午
+      periods:
+        - id: morning.1
+          label: 上午1
+        - id: morning.2
+          label: 上午2
+        - id: morning.3
+          label: 上午3
+        - id: morning.4
+          label: 上午4
+    - id: afternoon
+      label: 下午
+      periods:
+        - id: afternoon.1
+          label: 下午1
+        - id: afternoon.2
+          label: 下午2
+        - id: afternoon.3
+          label: 下午3
+        - id: afternoon.4
+          label: 下午4
+    - id: night
+      label: 晚自习
+      periods:
+        - id: night.1
+          label: 晚自习1
+        - id: night.2
+          label: 晚自习2
+rule_instances:
+  - id: base.night.fri_sun_mutex
+    template_id: night.fri_sun_mutex
+    enabled: true
+    mode: soft
+    weight: 12000
+    target_scope: boarding_optional
+    params:
+      days:
+        - 星期五
+        - 星期日
+metadata:
+  fixture_role: anonymous_cross_school_contract

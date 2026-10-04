@@ -1,0 +1,192 @@
+# 晚自习规则配置 # 文件用途说明
+# 说明：本文件以晚自习为主，并包含联合求解共享的白天/个性化附加约束配置 # 作用范围说明
+
+# 日历与节次定义 # 分区说明
+calendar: # 日历根节点
+  days: ["星期一","星期二","星期三","星期四","星期五","星期日"] # 晚自习参与的日期集合
+  periods: ["晚自习1","晚自习2"] # 晚自习节次集合
+
+# 晚自习基础参数 # 分区说明
+evening: # 晚自习基础配置
+  subjects: [] # 留空时完全采用教师定位表实际提供的学科列；填写后才启用显式晚自习白名单
+  max_subjects_per_class: 6 # 每班晚自习最多学科数
+  weekly_occurrences_per_subject: 2 # 每学科每周出现次数
+
+# 硬禁排规则开关与清单 # 分区说明
+hard_bans: # 硬禁排规则
+  enabled: true # 是否启用硬禁排
+
+  # 学科禁排（硬约束） # 子区块说明
+  subject_bans: # 学科按日禁排列表
+    - subject: "历史" # 被禁排学科
+      days: ["星期日"] # 禁排日期
+      periods: ["晚自习1", "晚自习2"] # 禁排节次
+
+  # 教师晚自习按天禁排（硬约束） # 子区块说明
+  # 解释：只要该教师在那天出现在任意班任意科，就会被禁止。 # 规则解释
+  teacher_day_bans: # 教师按天禁排名单
+    星期一: [] # 周一禁排教师名单
+    星期三: [] # 周三禁排教师名单
+    星期四: [] # 周四禁排教师名单
+    星期五: [] # 周五禁排教师名单
+    星期日: [""] # 周日禁排教师名单
+
+# 晚查寝规则配置 # 分区说明
+checkin: # 晚查寝配置
+  enabled: true # 是否启用查寝
+  exclude_heads: [] # 不参与晚查寝的班主任（硬约束）
+
+  # 每天晚查寝人数配置：男1女1 # 子区块说明
+  per_day: # 每天查寝人数
+    male: 1 # 男教师人数
+    female: 1 # 女教师人数
+
+  # 每个班主任一周内最大被指派次数 # 规则说明
+  per_teacher_max_times: 1 # 班主任每周最大晚查寝次数
+
+  # 是否要求被指派者当天必须有晚自习课 # 规则开关
+  require_teacher_has_class_that_day: true # true 则必须当日有课
+  require_teacher_has_class_that_day_mode: "hard" # 模式：hard|soft|off；soft 会保留查寝但记录当天无晚自习罚分
+  w_require_teacher_has_class_that_day: 3000 # soft 模式权重
+
+  # 指定教师晚查寝联动：被安排晚查寝时，当天需有晚自习（soft/hard 可切换）
+  enable_zeng_checkin_require_class_that_day: true # 是否启用指定教师晚查寝联动规则
+  zeng_checkin_require_class_mode: "hard" # 模式：hard|soft
+  w_zeng_checkin_require_class_that_day: 3000 # soft 模式权重
+  require_class_teacher_names: [] # 目标教师名，可填 1 个或多个
+  night_checkin_penalty_teachers: [] # 晚查寝惩罚教师名，可填 1 个或多个
+  zeng_checkin_teacher_name: "" # 兼容旧键：目标教师名
+  zeng_night_checkin_penalty_mode: "soft" # 指定教师晚查寝惩罚模式：hard=禁排；soft=按权重惩罚
+  w_zeng_night_checkin_penalty: 2000 # 指定教师晚查寝 soft 模式权重
+
+  # 额外视为班主任的人员 # 规则补充
+  extra_heads: # 额外班主任名单
+    # - name: "" # 人员姓名
+    #   gender: "男" # 人员性别
+    #   days: ["星期五"] # 可选：只在这些日期进入晚查寝候选池；不填则整周可用
+
+# 软约束权重配置 # 分区说明
+soft: # 软约束总开关
+  enabled: true # 是否启用软约束
+  adjacent_teacher_exempt_teachers: [] # 相邻两天连续晚自习惩罚豁免教师
+  weights: # 软约束权重
+    miss_head_on: 50        # 每天缺男/缺女班主任在岗的罚分
+    adjacent_teacher: 5000  # 教师相邻两天都上晚自习的罚分
+    sun_mon_teacher: 5000   # 周日周一连续晚自习惩罚权重
+    fri_sun_teacher: 2000   # 周五周日相关惩罚权重
+    checkin_repeat: 1500     # 晚查寝重复惩罚权重（男/女共用）
+
+# 晚自习约束模块开关与权重 # 分区说明
+evening_constraints: # 晚自习模块配置
+  enabled: true # 是否启用晚自习模块
+
+  enable_subject_sync: true # 同学科教师同步软约束
+
+  enable_physics_math_special: true # 物理数学特殊规则不排周日晚自习
+
+  physics_fri_mode: "hard" # 物理周五规则模式：hard=周五禁排；soft=按权重惩罚
+  history_fri_mode: "hard" # 历史周五规则模式：hard=周五禁排；soft=按权重惩罚
+  
+  enable_single_class_p1_p2_split: true # 单班教师 p1/p2 拆分
+  enable_double_class_weekday_p1_p2_split: true # 双班教师工作日两次晚自习节次拆分开关
+  double_class_weekday_p1_p2_mode: "hard" # 双班教师拆分模式：hard|soft（默认硬约束）
+  double_class_weekday_p1_p2_weight: 1000 # soft 模式罚分（超高）
+
+  enable_fri_sun_mutex: true # 周五周日晚自习互斥
+  fri_sun_mutex_mode: "hard"   # hard=硬约束 soft=软约束
+  fri_sun_mutex_weight: 20000   # soft 模式下罚分
+  fri_sun_mutex_exempt_teachers: [] # 周五/周日互斥豁免教师（这些教师不受该互斥约束）
+
+  enable_yk_xxc_fri_mutex: true # 指定教师对周五晚自习互斥
+  yk_xxc_fri_mutex_teachers: [] # 周五互斥教师对，填写两个姓名
+  yk_xxc_fri_mutex_mode: "hard" # hard=硬约束 soft=软约束
+  yk_xxc_fri_mutex_weight: 2000 # soft 模式下罚分
+
+  weights: # 晚自习模块权重
+    subject_sync: 500 # 同学科同步权重
+
+    physics_fri_penalty: 1500 # 物理周五惩罚
+    history_fri_penalty: 1500 # 历史周五惩罚
+    math_zeng_fri_penalty: 500 # 兼容旧键：未区分节次时使用
+
+    math_zeng_fri_p1_penalty: 600 # 指定数学教师周五数学在晚自习1惩罚（较低）
+    math_zeng_fri_p2_penalty: 800 # 指定数学教师周五数学在晚自习2惩罚（较高）
+
+# 白天新增可切换约束（供联合/白天模型读取） # 分区说明
+day_constraints: # 白天约束（新增可切换规则）配置分组
+  enable_am1_pm1_mutex: true # 是否启用工作日 AM1+PM1 组合限制
+  am1_pm1_mutex_mode: "hard" # hard|soft
+  w_am1_pm1_mutex: 3000 # soft 模式下 AM1+PM1 组合罚分权重
+
+  enable_two_class_am1_pm1_combo: true # 是否启用双班教师 AM1+PM1（1+1）组合限制
+  two_class_am1_pm1_combo_mode: "hard" # hard|soft
+  w_two_class_am1_pm1_combo: 3000 # soft 模式下双班教师 1+1 组合罚分权重
+
+  enable_am1_pm1_exclusive: true # 是否启用工作日 AM1 与 PM1 互斥规则
+  am1_pm1_exclusive_mode: "hard" # hard|soft
+  w_am1_pm1_exclusive: 3000 # soft 模式下 AM1/PM1 互斥罚分权重
+
+  enable_single_class_weekly_am1_cap: true # 是否启用单班教师每周 AM1 次数上限
+  single_class_weekly_am1_cap_max: 3 # 单班教师周一到周日 AM1 最多出现次数（硬约束）
+
+  enable_weekend_halfday_constraint: true # 是否启用周末课程半天集中约束
+  weekend_halfday_mode: "hard" # hard|soft
+  w_weekend_halfday: 3000 # soft 模式下周末跨半天罚分权重
+
+# 个性化新增可切换约束（供联合/白天模型读取） # 分区说明
+personalized_constraints: # 个性化约束（新增可切换规则）配置分组
+  enable_xhd_night_no_pm: true # 是否启用指定教师“晚自习当天下午尽量不排课”
+  xhd_night_no_pm_mode: "hard" # hard|soft
+  w_xhd_night_no_pm: 3000 # soft 模式下指定教师该规则罚分权重
+
+  enable_zw_no_consecutive_night: true # 是否启用指定教师晚自习不连续规则
+  zw_no_consecutive_night_mode: "hard" # hard|soft
+  w_zw_no_consecutive_night: 3000 # soft 模式下指定教师晚自习连续违例罚分权重
+  enable_zw_weekday_pm1_cap: true # 是否启用指定教师工作日下午1累计上限规则
+  zw_weekday_pm1_cap_mode: "hard" # hard|soft
+  zw_weekday_pm1_slot_key: "下午1" # 指定教师受限的节次键名（保持与系统节次定义一致）
+  zw_weekday_pm1_cap_max: 2 # 指定教师工作日该节次每周最大允许次数
+  w_zw_weekday_pm1_cap: 3000 # soft 模式下指定教师工作日下午1超限罚分权重
+
+  enable_mrj_hsm_sun_am12_fixed: true # 是否启用指定教师/指定教师周日固定上午1+2规则
+  mrj_hsm_sun_am12_fixed_mode: "hard" # hard|soft
+  w_mrj_hsm_sun_am12_fixed: 3000 # soft 模式下该固定时段规则罚分权重
+
+  enable_hsm_weekday_early_no_am1: true # 是否启用指定教师工作日“有早自习则不排上午1”
+  hsm_weekday_early_no_am1_mode: "hard" # hard|soft
+  w_hsm_weekday_early_no_am1: 2000 # soft 模式下指定教师该规则罚分权重
+  enable_wxl_weekday_early_no_am1: true # 是否启用指定教师工作日“有早自习则不排上午1”
+  wxl_weekday_early_no_am1_mode: "hard" # hard|soft
+  w_wxl_weekday_early_no_am1: 2000 # soft 模式下指定教师该规则罚分权重
+  enable_dln_weekday_no_am1: true # 是否启用指定教师工作日“上午1禁排”
+  dln_weekday_no_am1_mode: "hard" # hard|soft
+  w_dln_weekday_no_am1: 2000 # soft 模式下指定教师该规则罚分权重
+  enable_custom_no_am1_teachers: true # 是否启用“教师名单上午1禁排”（硬约束）
+  custom_no_am1_teachers: [] # 需禁排上午1的教师名单（你可自行填入）
+  enable_ld_no_mon_pm: true # 是否启用指定教师周一/周二/周四/周五下午禁排（硬约束）
+
+  enable_ld_tue_fri_pm_penalty: true # 是否启用指定教师周二到周五下午排课惩罚
+  w_ld_tue_fri_pm_each: 5000 # 指定教师周二到周五下午每节基础惩罚
+  w_ld_tue_fri_pm1_extra_each: 6000 # 指定教师周二到周五下午1额外每节惩罚
+
+  enable_zzx_no_sunday_night: true # 是否启用指定教师周日晚自习禁排规则
+  zzx_no_sunday_night_mode: "hard" # hard|soft
+  w_zzx_no_sunday_night: 3000 # soft 模式下指定教师周日晚自习违例罚分权重
+
+  enable_xyx_night_days_only: false # 是否启用指定教师晚自习仅允许指定日期规则
+  xyx_night_days_only_mode: "hard" # hard|soft
+  xyx_night_allowed_days: ["星期五", "星期日"] # 允许指定教师安排晚自习的日期集合（可调）
+  w_xyx_night_days_only: 2000 # soft 模式下指定教师非允许日期违例罚分权重
+
+# 求解器参数 # 分区说明
+solve: # 求解配置
+  time_limit_seconds: 100000   # 晚自习求解时间上限（秒）
+  workers: 8                 # 晚自习并行搜索线程数
+  relative_gap_limit: null # 可选：允许相对最优性缺口，空值表示不启用
+  absolute_gap_limit: null # 可选：允许绝对最优性缺口，空值表示不启用
+  log_search_progress: false # 是否输出 CP-SAT 搜索过程日志
+
+# 输出路径 # 分区说明
+output: # 输出配置
+  result_xlsx: "outputs/结果_MVP.xlsx" # 晚自习输出文件
+

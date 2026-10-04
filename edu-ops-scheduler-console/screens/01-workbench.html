@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>规则与校验 · 排课中枢</title>
+  <link rel="stylesheet" href="../assets/command-center.css">
+</head>
+<body class="page-screen page-rules">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">排</div>
+        <div>
+          <div class="brand-title">排课中枢</div>
+          <div class="brand-subtitle">Scheduler Command</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="排课流程">
+        <a class="nav-link" href="../index.html"><span class="nav-num">1</span><span>项目工作台</span></a>
+        <a class="nav-link" href="02-data-intake.html"><span class="nav-num">2</span><span>数据准备</span></a>
+        <a class="nav-link is-active" href="01-workbench.html"><span class="nav-num">3</span><span>规则与校验</span></a>
+        <a class="nav-link" href="03-rule-intake.html"><span class="nav-num">4</span><span>晚自习规则</span></a>
+        <a class="nav-link" href="05-solver-run.html"><span class="nav-num">5</span><span>求解计算</span></a>
+        <a class="nav-link" href="04-diagnostics.html"><span class="nav-num">6</span><span>方案诊断</span></a>
+        <a class="nav-link" href="07-timetable-preview.html"><span class="nav-num">7</span><span>课表预览</span></a>
+        <a class="nav-link" href="06-results-delivery.html"><span class="nav-num">8</span><span>结果交付</span></a>
+      </nav>
+            <div class="advanced">
+        <div class="section-label">高级工具</div>
+        <a class="tool-link" href="04-diagnostics.html">诊断规则</a>
+        <a class="tool-link" href="07-timetable-preview.html">课表预览</a>
+        <a class="tool-link" href="06-results-delivery.html">历史记录</a>
+      </div>
+      <div class="side-footer">
+        <button class="side-action" data-toast="已刷新项目状态">刷新状态</button>
+        <div class="side-user">
+          <span class="avatar">教</span>
+          <span><strong>教务管理员</strong><small>年级排课组</small></span>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+      <div class="project-chip">
+        <strong>2024-2025 学年 第二学期排课项目</strong>
+        <span class="status-pill ok">可求解</span>
+      </div>
+      <div class="top-meta">
+        <span>同步于 23:35</span>
+        <button class="ghost-btn" data-toast="后台同步完成">同步</button>
+      </div>
+    </header>
+      <main class="content">
+        <section class="page-title">
+          <div><div class="eyebrow">规则与校验</div><h1>白天排课规则工作台</h1><p>把硬约束、软偏好、教师定位和班级节奏放在同一个校验面板里。</p></div>
+          <div class="title-actions"><button class="btn primary" data-toast="白天规则已加入覆盖层">保存规则覆盖</button></div>
+        </section>
+        <section class="status-strip compact">
+          <div class="metric blue"><span>启用规则</span><strong>128</strong><small>hard 46 / soft 82</small></div>
+          <div class="metric ok"><span>规则冲突</span><strong>0</strong><small>阻断项已清空</small></div>
+          <div class="metric warn"><span>待复核</span><strong>5</strong><small>教师偏好与场地</small></div>
+          <div class="metric "><span>影响班级</span><strong>17</strong><small>高一至高三</small></div>
+        </section>
+        <section class="screen-grid two-one">
+          <section class="panel span-main">
+            <div class="panel-head"><div><h2>规则覆盖层</h2><p>按启用状态、权重和生效范围复核。</p></div><input class="inline-search" data-filter-table="#rule-table" placeholder="筛选规则"></div>
+            <div class="table-scroll"><table id="rule-table" class="dense-table"><thead><tr><th>规则</th><th>类型</th><th>范围</th><th>权重</th><th>状态</th></tr></thead><tbody>
+              <tr><td>同一教师同节次不可重复</td><td>硬约束</td><td>全校</td><td>必选</td><td><span class="badge ok">启用</span></td></tr>
+              <tr><td>体育课尽量避开上午第一节</td><td>软约束</td><td>高一</td><td>12</td><td><span class="badge blue">启用</span></td></tr>
+              <tr><td>实验课优先排入实验楼 201</td><td>软约束</td><td>理科班</td><td>8</td><td><span class="badge warn">需复核</span></td></tr>
+              <tr><td>班主任每日上午至少一节空档</td><td>软约束</td><td>班主任</td><td>10</td><td><span class="badge blue">启用</span></td></tr>
+            </tbody></table></div>
+          </section>
+          <section class="panel ">
+          <div class="panel-head"><h2>规则健康度</h2></div>
+          <div class="donut-row"><div class="donut" style="--p:86"></div><div><strong>86%</strong><span>当前覆盖层稳定，5 条规则需要人工确认。</span></div></div><div class="notice warn"><strong>建议先处理</strong><span>实验楼容量和班主任偏好最可能影响求解质量。</span></div>
+        </section>
+          <section class="panel span-main">
+          <div class="panel-head"><h2>教师定位变更</h2></div>
+          <div class="compact-list tall"><div><i class="dot blue"></i><span>教师A：周三上午第3节禁排</span><b>已同步</b></div><div><i class="dot warn"></i><span>教师B：跨校区移动时间不足</span><b>待复核</b></div><div><i class="dot ok"></i><span>教师C：教研时段已锁定</span><b>已生效</b></div></div>
+        </section>
+          <section class="panel ">
+          <div class="panel-head"><h2>下一步</h2></div>
+          <div class="action-stack"><a class="btn primary" href="03-rule-intake.html">录入晚自习规则</a><a class="btn" href="04-diagnostics.html">进入方案诊断</a></div>
+        </section>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../assets/command-center.js"></script>
+</body>
+</html>

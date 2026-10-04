@@ -1,0 +1,928 @@
+/*
+ * CourseOrder AI visual polish
+ * Selected direction: Frosted Navigation Dock
+ * Scope: presentation only. Business states, data attributes and interactions stay unchanged.
+ */
+
+:root {
+  --course-canvas: #f6f8fc;
+  --course-surface: #ffffff;
+  --course-ink: #0b1739;
+  --course-muted: #6f7d98;
+  --course-line: #dce4ef;
+  --course-blue: #1464f6;
+  --course-blue-soft: #edf4ff;
+  --course-green: #11a75c;
+  --course-glass: rgba(249, 252, 255, 0.76);
+  --course-glass-strong: rgba(255, 255, 255, 0.9);
+  --course-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --rail-width: 248px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) {
+  color: var(--course-ink);
+  background:
+    radial-gradient(circle at 71% 4%, rgba(75, 139, 255, 0.12), transparent 29%),
+    radial-gradient(circle at 28% 92%, rgba(68, 190, 180, 0.055), transparent 24%),
+    var(--course-canvas);
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .app-shell {
+  grid-template-columns: var(--rail-width) minmax(0, 1fr) !important;
+  min-height: 100dvh;
+  background: transparent !important;
+  isolation: isolate;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .workspace {
+  grid-template-rows: 82px minmax(0, 1fr) !important;
+  min-width: 0;
+  background: transparent !important;
+}
+
+/* Frosted navigation plane */
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .rail.sidebar {
+  top: 8px !important;
+  width: auto;
+  height: calc(100dvh - 16px) !important;
+  margin: 8px 0 8px 8px;
+  overflow: hidden;
+  border: 1px solid rgba(210, 222, 239, 0.88) !important;
+  border-radius: 22px;
+  background: var(--course-glass) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    10px 18px 44px rgba(31, 64, 112, 0.075) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(132%);
+  backdrop-filter: blur(24px) saturate(132%);
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .rail.sidebar::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.54), rgba(237, 244, 255, 0.2) 48%, rgba(255, 255, 255, 0.34));
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .rail.sidebar .brand {
+  grid-template-columns: minmax(0, 1fr) !important;
+  min-height: 92px !important;
+  padding: 27px 26px 18px !important;
+  border-bottom: 1px solid rgba(220, 228, 239, 0.74);
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .brand-mark,
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .brand-logo,
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .brand-caption {
+  display: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .brand-title {
+  margin: 0;
+  color: var(--course-blue) !important;
+  font-size: 29px !important;
+  font-weight: 800 !important;
+  line-height: 1;
+  letter-spacing: -0.045em !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-list.nav {
+  min-height: 0;
+  gap: 5px !important;
+  padding: 14px 12px 8px !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link {
+  width: calc(100% - 4px) !important;
+  min-height: 54px !important;
+  margin: 0 2px !important;
+  padding: 0 15px !important;
+  display: grid !important;
+  grid-template-columns: 22px minmax(0, 1fr) auto !important;
+  align-items: center;
+  justify-content: initial !important;
+  gap: 11px !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  color: #43516d !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 15.5px !important;
+  font-weight: 610 !important;
+  text-align: left;
+  transform: none !important;
+  transition:
+    color 160ms var(--course-ease),
+    border-color 160ms var(--course-ease),
+    background-color 160ms var(--course-ease),
+    box-shadow 160ms var(--course-ease) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link .nav-icon {
+  width: 22px !important;
+  height: 22px !important;
+  display: inline-grid !important;
+  place-items: center;
+  border-radius: 0 !important;
+  color: #5d6f8d !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 20px !important;
+  line-height: 1;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link:hover {
+  border-color: rgba(204, 217, 236, 0.7) !important;
+  color: var(--course-blue) !important;
+  background: rgba(240, 246, 255, 0.72) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link:hover .nav-icon {
+  color: var(--course-blue) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link.is-active,
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link.active {
+  border-color: rgba(190, 211, 243, 0.78) !important;
+  color: var(--course-blue) !important;
+  background: rgba(229, 239, 255, 0.82) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 8px 18px rgba(20, 100, 246, 0.07) !important;
+  font-weight: 720 !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link.is-active .nav-icon,
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link.active .nav-icon {
+  color: var(--course-blue) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-more {
+  margin: 10px 5px 0 !important;
+  padding-top: 9px;
+  border-top: 1px solid rgba(220, 228, 239, 0.78) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-more > summary {
+  min-height: 44px;
+  padding: 0 12px !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  color: #657590 !important;
+  font-size: 14.5px !important;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-more > summary i {
+  font-size: 19px;
+  transition: transform 160ms var(--course-ease);
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-more[open] > summary i {
+  transform: rotate(90deg);
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-more-list {
+  gap: 4px;
+  padding: 4px 0 1px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .premium-nav-label {
+  margin: 13px 17px 4px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  gap: 7px;
+  color: #755ce2 !important;
+  font-size: 11px !important;
+  font-weight: 760 !important;
+  letter-spacing: 0.06em !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .premium-nav-label i {
+  font-size: 16px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .premium-nav-item {
+  border-color: rgba(218, 209, 252, 0.42) !important;
+  color: #4d4b70 !important;
+  background: rgba(244, 240, 255, 0.55) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .premium-nav-item .nav-icon {
+  color: #7861db !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .premium-nav-item small {
+  padding: 4px 6px;
+  border: 1px solid rgba(197, 184, 247, 0.82);
+  border-radius: 5px;
+  color: #7257d4;
+  background: rgba(247, 244, 255, 0.88);
+  font-size: 9px !important;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .sidebar-guide {
+  margin: 5px 16px 12px !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .sidebar-guide button {
+  min-height: 40px;
+  padding: 0 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(198, 214, 237, 0.9) !important;
+  border-radius: 9px !important;
+  color: #385f98 !important;
+  background: rgba(255, 255, 255, 0.52) !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 650;
+  transform: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .sidebar-guide button i {
+  font-size: 17px;
+}
+
+/* Compact account utility */
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .sidebar-footer {
+  margin: 0 8px 8px;
+  padding: 17px !important;
+  display: grid;
+  gap: 14px !important;
+  border: 1px solid rgba(205, 218, 237, 0.86) !important;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    0 12px 28px rgba(31, 64, 112, 0.06) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-user {
+  min-height: 48px !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: 46px minmax(0, 1fr) !important;
+  align-items: center;
+  gap: 11px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-user > .avatar.small {
+  position: relative;
+  width: 46px !important;
+  height: 46px !important;
+  display: grid !important;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  border-radius: 13px !important;
+  color: #ffffff;
+  background: linear-gradient(145deg, #1572ff 0%, #0e9fc8 62%, #16b777 100%) !important;
+  box-shadow: 0 8px 18px rgba(20, 100, 246, 0.18);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-user > .avatar.small::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 11px;
+  height: 11px;
+  border: 3px solid rgba(255, 255, 255, 0.96);
+  border-radius: 50%;
+  background: var(--course-green);
+  box-sizing: content-box;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-user > span:not(.avatar) {
+  min-width: 0;
+  display: grid !important;
+  gap: 4px !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-user strong {
+  overflow: hidden;
+  color: var(--course-ink);
+  font-size: 16px !important;
+  font-weight: 740;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-user small {
+  overflow: hidden;
+  color: var(--course-muted) !important;
+  font-size: 12.5px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-footer-actions {
+  margin: 0 !important;
+  padding-top: 12px;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: 8px !important;
+  border-top: 1px solid rgba(218, 227, 240, 0.84);
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-footer-actions .ghost-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 9px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  font-size: 13.5px;
+  font-weight: 650;
+  white-space: nowrap;
+  transform: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .side-footer-actions .ghost-button i {
+  font-size: 17px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) #refreshBtn {
+  border-color: rgba(190, 210, 241, 0.92) !important;
+  color: var(--course-blue) !important;
+  background: rgba(235, 243, 255, 0.84) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) #logoutBtn {
+  border-color: rgba(210, 221, 236, 0.86) !important;
+  color: #60708b !important;
+  background: rgba(255, 255, 255, 0.54) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) #refreshBtn:hover {
+  border-color: rgba(150, 185, 237, 0.98) !important;
+  background: rgba(222, 235, 255, 0.95) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) #logoutBtn:hover {
+  border-color: rgba(190, 205, 225, 0.95) !important;
+  color: #34445f !important;
+  background: rgba(248, 250, 254, 0.94) !important;
+}
+
+/* Pearl glass top bar */
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .topbar {
+  top: 14px !important;
+  width: auto;
+  height: 66px !important;
+  min-height: 66px;
+  margin: 14px 18px 2px;
+  padding: 0 18px !important;
+  align-self: start;
+  border: 1px solid rgba(215, 225, 239, 0.86) !important;
+  border-radius: 14px;
+  background: var(--course-glass-strong) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 10px 28px rgba(31, 64, 112, 0.055) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(128%);
+  backdrop-filter: blur(24px) saturate(128%);
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .project-switcher {
+  min-width: 0;
+  gap: 12px;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .project-label {
+  min-height: 0;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .project-label {
+  overflow: hidden;
+  color: var(--course-ink);
+  font-size: 18px;
+  font-weight: 760;
+  letter-spacing: -0.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .run-badge {
+  min-height: 28px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(236, 204, 147, 0.38);
+  border-radius: 7px !important;
+  color: #d27900;
+  background: #fff5e8;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .topbar-actions {
+  gap: 11px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .last-updated {
+  color: #7a879e !important;
+  font-size: 12px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .role-select,
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .authenticated-role {
+  min-height: 36px;
+  border: 1px solid rgba(207, 219, 235, 0.92) !important;
+  border-radius: 9px !important;
+  color: #354560;
+  background: rgba(255, 255, 255, 0.68) !important;
+  box-shadow: none !important;
+  font-size: 13px;
+}
+
+/* Content plane */
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .content {
+  min-width: 0;
+  padding: 18px 30px 36px !important;
+  overflow-x: hidden !important;
+  background: transparent !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation).home-page .page-heading,
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation).screen-page .page-heading {
+  max-width: 1540px;
+  min-height: 0;
+  margin: 0 auto 17px !important;
+  padding: 0 2px 8px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .page-heading .eyebrow {
+  margin: 0 0 8px;
+  padding: 4px 9px;
+  border: 1px solid rgba(190, 211, 243, 0.92);
+  border-radius: 7px;
+  color: var(--course-blue) !important;
+  background: rgba(235, 243, 255, 0.82);
+  font-size: 12px !important;
+  font-weight: 720;
+  letter-spacing: 0;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .page-heading h1 {
+  color: var(--course-ink);
+  font-size: 34px !important;
+  font-weight: 800;
+  line-height: 1.2 !important;
+  letter-spacing: -0.04em !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .page-heading p:last-child {
+  margin-top: 7px !important;
+  color: #65738d !important;
+  font-size: 15px !important;
+  line-height: 1.55;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .view-root {
+  width: 100%;
+  max-width: 1540px !important;
+  min-width: 0;
+  margin: 0 auto !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) :is(.card, .formal-card) {
+  border-color: rgba(216, 225, 238, 0.92) !important;
+  border-radius: 14px !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 8px 26px rgba(31, 64, 112, 0.045) !important;
+}
+
+/* Project workflow */
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow {
+  margin: 0 0 16px !important;
+  overflow: hidden;
+  border: 1px solid rgba(214, 224, 238, 0.94) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 10px 30px rgba(31, 64, 112, 0.05) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-summary {
+  min-height: 54px !important;
+  padding: 11px 20px !important;
+  border-bottom-color: rgba(224, 232, 243, 0.9) !important;
+  background: rgba(251, 253, 255, 0.86) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-summary span {
+  color: var(--course-muted);
+  font-size: 12px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-summary strong {
+  color: var(--course-ink);
+  font-size: 14px;
+  font-weight: 740;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-summary progress {
+  width: min(230px, 22vw);
+  height: 6px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-track {
+  padding: 18px 18px 19px !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-step {
+  min-height: 98px !important;
+  padding: 9px 8px !important;
+  gap: 8px;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-step.active,
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-step.active:not(:disabled):hover {
+  background: rgba(235, 243, 255, 0.76) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-step-number {
+  width: 40px;
+  height: 40px;
+  border-color: #cdd8e8;
+  color: var(--course-ink);
+  background: #f8faff;
+  font-size: 18px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-step.active .formal-step-number {
+  border-color: var(--course-blue);
+  color: #ffffff;
+  background: var(--course-blue);
+  box-shadow: 0 0 0 6px rgba(20, 100, 246, 0.09) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-step strong {
+  color: var(--course-ink);
+  font-size: 15px;
+  font-weight: 720;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-workflow-step span {
+  color: var(--course-muted);
+  font-size: 13px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-card {
+  min-height: 132px !important;
+  padding: 20px 22px !important;
+  grid-template-columns: 58px minmax(0, 1fr) minmax(160px, 184px) !important;
+  gap: 18px !important;
+  border: 1px solid rgba(177, 205, 247, 0.92) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(105deg, rgba(237, 244, 255, 0.9), rgba(250, 252, 255, 0.92) 48%, rgba(255, 255, 255, 0.96)) !important;
+  box-shadow: 0 10px 28px rgba(20, 100, 246, 0.055) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-number {
+  width: 54px;
+  height: 54px;
+  color: var(--course-blue);
+  background: rgba(229, 239, 255, 0.92);
+  box-shadow: 0 0 0 7px rgba(20, 100, 246, 0.065) !important;
+  font-size: 24px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-kicker {
+  margin-bottom: 5px;
+  color: var(--course-blue);
+  font-size: 12px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-card h2 {
+  color: var(--course-ink);
+  font-size: 21px;
+  font-weight: 770;
+  letter-spacing: -0.02em;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-card p {
+  margin-top: 6px;
+  color: #64738d;
+  font-size: 13px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-actions {
+  gap: 8px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-actions button {
+  min-height: 38px;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+  font-size: 12px;
+  transform: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-table {
+  margin-top: 16px !important;
+  overflow: hidden;
+  border: 1px solid rgba(216, 225, 238, 0.94) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 26px rgba(31, 64, 112, 0.045) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row {
+  min-height: 55px !important;
+  padding: 0 20px !important;
+  grid-template-columns: 1.15fr 0.82fr 1.45fr 0.46fr !important;
+  gap: 16px !important;
+  border-bottom-color: rgba(224, 232, 243, 0.92) !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row.header {
+  min-height: 44px !important;
+  color: #687791;
+  background: rgba(250, 252, 255, 0.9) !important;
+  font-size: 12px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row strong {
+  color: var(--course-ink);
+  font-size: 14px;
+  font-weight: 720;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row span {
+  color: #687791;
+  font-size: 13px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row .pill {
+  min-height: 24px;
+  padding: 3px 9px;
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  border-radius: 5px !important;
+  font-size: 12px;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row .pill.ok {
+  color: #058346;
+  background: linear-gradient(90deg, rgba(224, 249, 237, 0.96), rgba(239, 251, 245, 0.82));
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row .pill.warning {
+  color: #cf7600;
+  background: linear-gradient(90deg, rgba(255, 242, 220, 0.96), rgba(255, 249, 239, 0.84));
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row .pill.info {
+  color: #1169da;
+  background: linear-gradient(90deg, rgba(231, 241, 255, 0.96), rgba(243, 248, 255, 0.84));
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-status-row button {
+  min-height: 34px;
+  color: var(--course-blue);
+  box-shadow: none !important;
+  font-size: 12px;
+  transform: none !important;
+}
+
+body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-ai-note {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border: 1px solid rgba(205, 219, 241, 0.9);
+  border-radius: 10px;
+  color: #4f607d;
+  background: rgba(247, 250, 255, 0.76);
+  box-shadow: none !important;
+  font-size: 13px;
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .rail.sidebar,
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .topbar,
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .sidebar-footer {
+    background: rgba(250, 252, 255, 0.98) !important;
+  }
+}
+
+@media (max-width: 1440px) and (min-width: 761px) {
+  :root { --rail-width: 224px; }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .rail.sidebar .brand {
+    padding-inline: 22px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link {
+    padding-inline: 12px !important;
+    gap: 9px !important;
+    font-size: 14px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .content {
+    padding-inline: 24px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-card {
+    grid-template-columns: 54px minmax(0, 1fr) minmax(150px, 170px) !important;
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 761px) {
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .last-updated {
+    display: none;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-card {
+    grid-template-columns: 54px minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .app-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    min-height: 100dvh;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .workspace {
+    grid-template-rows: 64px minmax(0, 1fr) !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .rail.sidebar {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0;
+    border-width: 0 0 1px !important;
+    border-radius: 0;
+    box-shadow: none !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .rail.sidebar .brand {
+    min-height: 58px !important;
+    padding: 16px 18px 10px !important;
+    border-bottom: 0;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .brand-title {
+    font-size: 23px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-list.nav {
+    display: flex !important;
+    gap: 7px !important;
+    overflow-x: auto !important;
+    padding: 5px 12px 10px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) :is(.nav-list.nav, .formal-workflow-track) {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(20, 100, 246, 0.24) transparent;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) :is(.nav-list.nav, .formal-workflow-track)::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) :is(.nav-list.nav, .formal-workflow-track)::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(20, 100, 246, 0.24);
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link {
+    flex: 0 0 auto;
+    width: auto !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 11px !important;
+    grid-template-columns: 19px max-content auto !important;
+    gap: 7px !important;
+    font-size: 13px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .nav-item.nav-link .nav-icon {
+    width: 19px !important;
+    height: 19px !important;
+    font-size: 17px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) :is(.nav-more, .premium-nav-label, .sidebar-guide, .sidebar-footer) {
+    display: none !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .topbar {
+    top: 0 !important;
+    height: 56px !important;
+    min-height: 56px;
+    margin: 6px 10px 2px;
+    padding-inline: 12px !important;
+    overflow: hidden !important;
+    border-radius: 11px;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .project-switcher {
+    width: 100%;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .project-label {
+    min-width: 0;
+    flex: 1 1 auto;
+    font-size: 14px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .run-badge {
+    width: auto !important;
+    min-height: 26px;
+    flex: 0 0 auto;
+    padding-inline: 8px;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .topbar-actions,
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .role-select {
+    display: none !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .content {
+    padding: 14px 14px 28px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .page-heading h1 {
+    font-size: 27px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-card {
+    grid-template-columns: 46px minmax(0, 1fr) !important;
+    padding: 18px !important;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-number {
+    width: 46px;
+    height: 46px;
+  }
+
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) .formal-next-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) *,
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) *::before,
+  body[data-ui-source="edu-ops-scheduler-console"]:not(.page-conversation) *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

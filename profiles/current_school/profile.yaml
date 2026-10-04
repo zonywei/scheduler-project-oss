@@ -1,0 +1,129 @@
+profile_id: current_school
+name: 匿名寄宿制高中示例
+stage: senior
+campuses:
+  - main
+tags:
+  - boarding
+  - excel_friendly
+  - legacy_config_mapped
+calendar:
+  teaching_days:
+    - 星期一
+    - 星期二
+    - 星期三
+    - 星期四
+    - 星期五
+    - 星期六
+    - 星期日
+  night_days:
+    - 星期一
+    - 星期二
+    - 星期三
+    - 星期四
+    - 星期五
+    - 星期日
+  period_groups:
+    - id: early
+      label: 早自习
+      periods:
+        - id: early.1
+          label: 早自习1
+    - id: morning
+      label: 上午
+      periods:
+        - id: morning.1
+          label: 上午1
+        - id: morning.2
+          label: 上午2
+        - id: morning.3
+          label: 上午3
+        - id: morning.4
+          label: 上午4
+    - id: afternoon
+      label: 下午
+      periods:
+        - id: afternoon.1
+          label: 下午1
+        - id: afternoon.2
+          label: 下午2
+        - id: afternoon.3
+          label: 下午3
+        - id: afternoon.4
+          label: 下午4
+    - id: night
+      label: 晚自习
+      periods:
+        - id: night.1
+          label: 晚自习1
+        - id: night.2
+          label: 晚自习2
+rule_instance_sources:
+  legacy_rules_file: scheduler/config/rules.yaml
+  groups:
+    - evening
+    - checkin
+    - evening_constraints
+    - day_constraints
+    - personalized_constraints
+rule_instances:
+  - id: current.night.fri_sun_mutex
+    template_id: night.fri_sun_mutex
+    enabled: true
+    mode: hard
+    weight: 20000
+    target_scope: boarding_high_school
+    params:
+      days:
+        - 星期五
+        - 星期日
+      exempt_teachers: []
+  - id: current.night.checkin
+    template_id: night.checkin
+    enabled: true
+    mode: hard
+    target_scope: boarding_high_school
+    params:
+      per_day:
+        male: 1
+        female: 1
+      require_teacher_has_class_that_day: true
+  - id: current.day.weekend_halfday
+    template_id: day.weekend_halfday_constraint
+    enabled: true
+    mode: hard
+    weight: 3000
+    target_scope: weekend_day_classes
+    params:
+      days:
+        - 星期六
+        - 星期日
+  - id: current.shared.personalized_constraints
+    template_id: shared.personalized_constraints
+    enabled: true
+    mode: hard
+    target_scope: current_school_teacher_targets
+    params:
+      legacy_group: personalized_constraints
+      teacher_targets_path: personalized_constraints.teacher_targets
+      solver_effect: none
+generated_rule_instance_sets:
+  - id: current.personalized_legacy_rules
+    template_group: personalized_legacy_rules
+    id_prefix: current.personalized
+    enabled: true
+    target_scope: current_school_teacher_targets
+    params:
+      legacy_group: personalized_constraints
+      teacher_targets_path: personalized_constraints.teacher_targets
+      solver_effect: none
+input_sources:
+  teacher_subject_table: scheduler/教师定位表.xlsx
+  day_rule_workbook: scheduler/白天规则.xlsx
+  io_config: scheduler/config/io.yaml
+output_policy:
+  formal_schedule_name: 最终全局最优解_正式版.xlsx
+  result_package_name: result_package.zip
+metadata:
+  migration_note: 匿名示例 Profile 先作为规则迁移审计件，不接管现有求解入口。
+  open_source_note: 不包含真实学校、教师、学生或历史求解数据。

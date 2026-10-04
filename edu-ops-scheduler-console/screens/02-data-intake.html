@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>数据准备 · 排课中枢</title>
+  <link rel="stylesheet" href="../assets/command-center.css">
+</head>
+<body class="page-screen page-data">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">排</div>
+        <div>
+          <div class="brand-title">排课中枢</div>
+          <div class="brand-subtitle">Scheduler Command</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="排课流程">
+        <a class="nav-link" href="../index.html"><span class="nav-num">1</span><span>项目工作台</span></a>
+        <a class="nav-link is-active" href="02-data-intake.html"><span class="nav-num">2</span><span>数据准备</span></a>
+        <a class="nav-link" href="01-workbench.html"><span class="nav-num">3</span><span>规则与校验</span></a>
+        <a class="nav-link" href="03-rule-intake.html"><span class="nav-num">4</span><span>晚自习规则</span></a>
+        <a class="nav-link" href="05-solver-run.html"><span class="nav-num">5</span><span>求解计算</span></a>
+        <a class="nav-link" href="04-diagnostics.html"><span class="nav-num">6</span><span>方案诊断</span></a>
+        <a class="nav-link" href="07-timetable-preview.html"><span class="nav-num">7</span><span>课表预览</span></a>
+        <a class="nav-link" href="06-results-delivery.html"><span class="nav-num">8</span><span>结果交付</span></a>
+      </nav>
+            <div class="advanced">
+        <div class="section-label">高级工具</div>
+        <a class="tool-link" href="04-diagnostics.html">诊断规则</a>
+        <a class="tool-link" href="07-timetable-preview.html">课表预览</a>
+        <a class="tool-link" href="06-results-delivery.html">历史记录</a>
+      </div>
+      <div class="side-footer">
+        <button class="side-action" data-toast="已刷新项目状态">刷新状态</button>
+        <div class="side-user">
+          <span class="avatar">教</span>
+          <span><strong>教务管理员</strong><small>年级排课组</small></span>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+      <div class="project-chip">
+        <strong>2024-2025 学年 第二学期排课项目</strong>
+        <span class="status-pill ok">可求解</span>
+      </div>
+      <div class="top-meta">
+        <span>同步于 23:35</span>
+        <button class="ghost-btn" data-toast="后台同步完成">同步</button>
+      </div>
+    </header>
+      <main class="content">
+        <section class="page-title">
+          <div><div class="eyebrow">数据准备</div><h1>基础数据导入与校验</h1><p>把配置、教师、班级、规则和业务工作簿统一校验到一个批次。</p></div>
+          <div class="title-actions"><button class="btn primary" data-toast="已保存校验通过项">保存校验通过项</button></div>
+        </section>
+        <section class="status-strip compact">
+          <div class="metric blue"><span>配置源</span><strong>2</strong><small>io.yaml / rules.yaml</small></div>
+          <div class="metric ok"><span>业务 Excel</span><strong>2</strong><small>教师定位表 / 白天规则</small></div>
+          <div class="metric "><span>教务表类型</span><strong>26+</strong><small>调代课、监考、请假</small></div>
+          <div class="metric green"><span>审计方式</span><strong>可撤回</strong><small>前后值留痕</small></div>
+        </section>
+        <section class="screen-grid two-one">
+          <section class="panel span-main">
+            <div class="panel-head"><div><h2>当前输入源</h2><p>展示当前批次实际读取的配置和工作簿。</p></div><input class="inline-search" data-filter-table="#source-table" placeholder="筛选文件"></div>
+            <div class="table-scroll"><table id="source-table" class="dense-table"><thead><tr><th>来源</th><th>文件</th><th>大小</th><th>最近修改</th><th>状态</th><th>操作</th></tr></thead><tbody>
+              <tr><td>输入输出配置</td><td>scheduler/config/io.yaml</td><td>23.6 KB</td><td>2026-05-12 09:49</td><td><span data-file-status class="badge ok">存在</span></td><td><button class="mini-btn" data-validate-file>校验列</button></td></tr>
+              <tr><td>规则配置</td><td>scheduler/config/rules.yaml</td><td>10.7 KB</td><td>2026-05-12 03:50</td><td><span data-file-status class="badge ok">存在</span></td><td><button class="mini-btn" data-validate-file>校验合并</button></td></tr>
+              <tr><td>教师定位表</td><td>scheduler/教师定位表.xlsx</td><td>11.2 KB</td><td>2026-05-06 02:33</td><td><span data-file-status class="badge ok">存在</span></td><td><button class="mini-btn" data-validate-file>校验字段</button></td></tr>
+              <tr><td>白天规则</td><td>scheduler/白天规则.xlsx</td><td>13.5 KB</td><td>2026-04-26 00:54</td><td><span data-file-status class="badge ok">存在</span></td><td><button class="mini-btn" data-validate-file>校验表头</button></td></tr>
+            </tbody></table></div>
+          </section>
+          <section class="panel ">
+          <div class="panel-head"><h2>导入规则</h2></div>
+          <div class="rule-notes"><div class="notice blue"><strong>预览不落库</strong><span>导入先进入未保存预览，风险重算后再保存。</span></div><div class="notice warn"><strong>缺列直接拒绝</strong><span>核心表必须匹配列名，不能自动补。</span></div><div class="notice blue"><strong>审计可撤回</strong><span>保存会记录来源、行数和完整前后值。</span></div></div>
+        </section>
+          <section class="panel span-main">
+          <div class="panel-head"><h2>教务工作簿预览</h2></div>
+          <div class="card-grid three"><div class="small-card"><strong>调代课</strong><span>状态、原教师、代课教师、班级、节次</span><b class="badge warn">待审批会阻断发布</b></div><div class="small-card"><strong>场地资源</strong><span>容量、可用时段、负责人</span><b class="badge blue">参与冲突检测</b></div><div class="small-card"><strong>教师请假</strong><span>触发同年级同学科代课建议</span><b class="badge ok">可进局部修复</b></div></div>
+        </section>
+          <section class="panel ">
+          <div class="panel-head"><h2>变更审计</h2></div>
+          <div class="audit-list"><div><b>09:18</b><span>教师定位表保存</span><em>可回滚</em></div><div><b>09:22</b><span>教务表预览完成</span><em>预览</em></div><div><b>09:29</b><span>规则字段更新</span><em>待复核</em></div></div>
+        </section>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../assets/command-center.js"></script>
+</body>
+</html>

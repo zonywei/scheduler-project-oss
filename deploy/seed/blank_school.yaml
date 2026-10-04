@@ -1,0 +1,11 @@
+# Production bootstrap seed. This file must remain free of school, teacher,
+# student, timetable, rule-history, and credential data.
+io: {}
+rules: {}
+temporary_rules:
+  active: []
+academic_affairs:
+  tables: {}
+  settings: {}
+change_audit:
+  entries: []

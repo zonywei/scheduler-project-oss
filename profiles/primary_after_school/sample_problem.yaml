@@ -1,0 +1,38 @@
+classes:
+  - 三年级1班
+class_subject_teachers:
+  - class: 三年级1班
+    subject: 语文
+    teacher: 匿名小学语文
+  - class: 三年级1班
+    subject: 综合实践
+    teacher: 匿名小学综合
+available_slots:
+  - day: 星期一
+    block: 上午
+    period: 1
+  - day: 星期二
+    block: 下午
+    period: 1
+  - day: 星期四
+    block: 课后服务
+    period: 2
+subject_requirements:
+  - class: 三年级1班
+    subject: 语文
+    early: 0
+    weekday: 6
+    weekend: 0
+  - class: 三年级1班
+    subject: 综合实践
+    early: 0
+    weekday: 2
+    weekend: 0
+academic_tables:
+  after_school:
+    - 课程名称: 科创活动
+      星期: 星期四
+      时段: 课后服务2
+      负责教师: 匿名小学综合
+      场地: 科创教室
+      状态: 待确认

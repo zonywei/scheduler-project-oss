@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>课表预览 · 排课中枢</title>
+  <link rel="stylesheet" href="../assets/command-center.css">
+</head>
+<body class="page-screen page-timetable">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">排</div>
+        <div>
+          <div class="brand-title">排课中枢</div>
+          <div class="brand-subtitle">Scheduler Command</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="排课流程">
+        <a class="nav-link" href="../index.html"><span class="nav-num">1</span><span>项目工作台</span></a>
+        <a class="nav-link" href="02-data-intake.html"><span class="nav-num">2</span><span>数据准备</span></a>
+        <a class="nav-link" href="01-workbench.html"><span class="nav-num">3</span><span>规则与校验</span></a>
+        <a class="nav-link" href="03-rule-intake.html"><span class="nav-num">4</span><span>晚自习规则</span></a>
+        <a class="nav-link" href="05-solver-run.html"><span class="nav-num">5</span><span>求解计算</span></a>
+        <a class="nav-link" href="04-diagnostics.html"><span class="nav-num">6</span><span>方案诊断</span></a>
+        <a class="nav-link is-active" href="07-timetable-preview.html"><span class="nav-num">7</span><span>课表预览</span></a>
+        <a class="nav-link" href="06-results-delivery.html"><span class="nav-num">8</span><span>结果交付</span></a>
+      </nav>
+      <div class="advanced">
+        <div class="section-label">高级工具</div>
+        <a class="tool-link" href="04-diagnostics.html">诊断规则</a>
+        <a class="tool-link" href="07-timetable-preview.html">课表预览</a>
+        <a class="tool-link" href="06-results-delivery.html">历史记录</a>
+      </div>
+      <div class="side-footer">
+        <button class="side-action" data-toast="已刷新项目状态">刷新状态</button>
+        <div class="side-user">
+          <span class="avatar">教</span>
+          <span><strong>教务管理员</strong><small>年级排课组</small></span>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="project-chip">
+          <strong>2024-2025 学年 第二学期排课项目</strong>
+          <span class="status-pill ok">可预览</span>
+        </div>
+        <div class="top-meta">
+          <span>方案 A-03 · FEASIBLE</span>
+          <button class="ghost-btn" data-toast="课表快照已更新">更新快照</button>
+        </div>
+      </header>
+      <main class="content">
+        <section class="page-title">
+          <div><div class="eyebrow">课表预览</div><h1>方案课表独立审阅</h1><p>单独查看班级、教师和场地维度，先定位冲突，再决定是否导出结果材料。</p></div>
+          <div class="title-actions"><button class="btn" data-toast="已复制当前课表链接">复制链接</button><a class="btn primary" href="06-results-delivery.html">进入结果交付</a></div>
+        </section>
+        <section class="status-strip compact">
+          <div class="metric green"><span>方案评分</span><strong>92.6</strong><small>当前最优 A-03</small></div>
+          <div class="metric warn"><span>软约束冲突</span><strong>23</strong><small>2 条需人工确认</small></div>
+          <div class="metric blue"><span>班级覆盖</span><strong>42/42</strong><small>全部班级已排满</small></div>
+          <div class="metric ok"><span>交付状态</span><strong>可导出</strong><small>正式状态由结果包记录</small></div>
+        </section>
+        <section class="screen-grid timetable-grid">
+          <section class="panel timetable-main">
+            <div class="panel-head">
+              <div><h2 data-timetable-title>匿名班级A · 班级课表</h2><p>按周一至周五、1-8 节完整预览当前候选方案。</p></div>
+              <div class="segmented" aria-label="课表视图">
+                <button class="is-active" data-timetable-view="class">班级</button>
+                <button data-timetable-view="teacher">教师</button>
+                <button data-timetable-view="room">场地</button>
+              </div>
+            </div>
+            <div class="timetable-toolbar">
+              <span class="badge blue">A-03 当前最优</span>
+              <span>匿名班级A</span>
+              <span>第 5 教学周</span>
+              <span>冲突高亮已开启</span>
+            </div>
+            <div class="timetable-board" aria-label="课表预览表格">
+              <div class="time-head">节次</div><div class="day-head">周一</div><div class="day-head">周二</div><div class="day-head">周三</div><div class="day-head">周四</div><div class="day-head">周五</div>
+              <div class="slot">1</div><div class="lesson"><b>语文</b><span>教师B · A301</span></div><div class="lesson"><b>数学</b><span>教师C · A301</span></div><div class="lesson warn-cell"><b>英语</b><span>教师教研冲突</span></div><div class="lesson"><b>物理</b><span>教师D · 实验楼</span></div><div class="lesson"><b>化学</b><span>教师H · B204</span></div>
+              <div class="slot">2</div><div class="lesson"><b>数学</b><span>教师C · A301</span></div><div class="lesson"><b>体育</b><span>操场 2 区</span></div><div class="lesson"><b>语文</b><span>教师B · A301</span></div><div class="lesson ok-cell"><b>实验</b><span>双师已确认</span></div><div class="lesson"><b>英语</b><span>教师E · A301</span></div>
+              <div class="slot">3</div><div class="lesson"><b>英语</b><span>教师E · A301</span></div><div class="lesson"><b>历史</b><span>教师F · A301</span></div><div class="lesson"><b>地理</b><span>教师G · A301</span></div><div class="lesson"><b>数学</b><span>教师C · A301</span></div><div class="lesson"><b>班会</b><span>班主任 · A301</span></div>
+              <div class="slot">4</div><div class="lesson"><b>物理</b><span>教师D · A301</span></div><div class="lesson"><b>语文</b><span>教师B · A301</span></div><div class="lesson"><b>政治</b><span>何老师 · A301</span></div><div class="lesson warn-cell"><b>体育</b><span>场地容量预警</span></div><div class="lesson"><b>自修</b><span>班主任巡课</span></div>
+              <div class="slot">5</div><div class="lesson"><b>化学</b><span>教师H · B204</span></div><div class="lesson"><b>英语</b><span>教师E · A301</span></div><div class="lesson"><b>数学</b><span>教师C · A301</span></div><div class="lesson"><b>语文</b><span>教师B · A301</span></div><div class="lesson"><b>音乐</b><span>艺术楼 102</span></div>
+              <div class="slot">6</div><div class="lesson"><b>信息</b><span>机房 3</span></div><div class="lesson"><b>物理</b><span>教师D · A301</span></div><div class="lesson"><b>英语</b><span>教师E · A301</span></div><div class="lesson"><b>历史</b><span>教师F · A301</span></div><div class="lesson"><b>地理</b><span>教师G · A301</span></div>
+            </div>
+          </section>
+          <section class="panel timetable-side">
+            <div class="panel-head"><h2>审阅提示</h2><span class="badge warn">2 条待处理</span></div>
+            <div class="compact-list tall">
+              <div><i class="dot warn"></i><span>周三第 1 节英语与年级教研时间冲突</span><a href="04-diagnostics.html">诊断</a></div>
+              <div><i class="dot warn"></i><span>周四第 4 节体育场地容量不足</span><a href="04-diagnostics.html">诊断</a></div>
+              <div><i class="dot ok"></i><span>连堂、合班、单双周规则均已覆盖</span><b>通过</b></div>
+              <div><i class="dot ok"></i><span>匿名班级A周课时 38 节，符合上限</span><b>通过</b></div>
+            </div>
+          </section>
+          <section class="panel timetable-side bottom">
+            <div class="panel-head"><h2>人工调整队列</h2></div>
+            <div class="audit-list">
+              <div><b>10:21</b><span>英语教研冲突已指派给排课管理员</span><em>待处理</em></div>
+              <div><b>10:18</b><span>实验课双师绑定通过</span><em>已确认</em></div>
+              <div><b>10:12</b><span>体育场地容量等待年级主任确认</span><em>待复核</em></div>
+            </div>
+          </section>
+          <section class="panel timetable-actions">
+            <div class="panel-head"><h2>预览动作</h2></div>
+            <div class="action-stack compact-actions">
+              <button class="btn primary" data-toast="已标记 A-03 为待发布方案">标记为待发布</button>
+              <button class="btn" data-toast="已导出班级课表预览">导出班级预览</button>
+              <button class="btn" data-toast="已创建人工微调任务">创建微调任务</button>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../assets/command-center.js"></script>
+</body>
+</html>

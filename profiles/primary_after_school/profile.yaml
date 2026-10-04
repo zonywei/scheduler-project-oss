@@ -1,0 +1,50 @@
+profile_id: primary_after_school
+name: 通用小学课后服务模板
+stage: primary
+campuses:
+  - main
+tags:
+  - excel_friendly
+  - after_school_service
+calendar:
+  teaching_days:
+    - 星期一
+    - 星期二
+    - 星期三
+    - 星期四
+    - 星期五
+  night_days: []
+  period_groups:
+    - id: morning
+      label: 上午
+      periods:
+        - id: morning.1
+          label: 上午1
+        - id: morning.2
+          label: 上午2
+        - id: morning.3
+          label: 上午3
+    - id: afternoon
+      label: 下午
+      periods:
+        - id: afternoon.1
+          label: 下午1
+        - id: afternoon.2
+          label: 下午2
+    - id: after_school
+      label: 课后服务
+      periods:
+        - id: after_school.1
+          label: 课后服务1
+        - id: after_school.2
+          label: 课后服务2
+rule_instances:
+  - id: primary.day.am1_pm1_mutex.disabled
+    template_id: day.am1_pm1_mutex
+    enabled: false
+    mode: "off"
+    target_scope: primary_after_school
+    params:
+      reason: 小学课后服务模板不默认启用高中式 AM1/PM1 组合限制
+metadata:
+  fixture_role: anonymous_cross_school_contract

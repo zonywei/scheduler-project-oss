@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>方案诊断 · 排课中枢</title>
+  <link rel="stylesheet" href="../assets/command-center.css">
+</head>
+<body class="page-screen page-diagnostics">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">排</div>
+        <div>
+          <div class="brand-title">排课中枢</div>
+          <div class="brand-subtitle">Scheduler Command</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="排课流程">
+        <a class="nav-link" href="../index.html"><span class="nav-num">1</span><span>项目工作台</span></a>
+        <a class="nav-link" href="02-data-intake.html"><span class="nav-num">2</span><span>数据准备</span></a>
+        <a class="nav-link" href="01-workbench.html"><span class="nav-num">3</span><span>规则与校验</span></a>
+        <a class="nav-link" href="03-rule-intake.html"><span class="nav-num">4</span><span>晚自习规则</span></a>
+        <a class="nav-link" href="05-solver-run.html"><span class="nav-num">5</span><span>求解计算</span></a>
+        <a class="nav-link is-active" href="04-diagnostics.html"><span class="nav-num">6</span><span>方案诊断</span></a>
+        <a class="nav-link" href="07-timetable-preview.html"><span class="nav-num">7</span><span>课表预览</span></a>
+        <a class="nav-link" href="06-results-delivery.html"><span class="nav-num">8</span><span>结果交付</span></a>
+      </nav>
+            <div class="advanced">
+        <div class="section-label">高级工具</div>
+        <a class="tool-link" href="04-diagnostics.html">诊断规则</a>
+        <a class="tool-link" href="07-timetable-preview.html">课表预览</a>
+        <a class="tool-link" href="06-results-delivery.html">历史记录</a>
+      </div>
+      <div class="side-footer">
+        <button class="side-action" data-toast="已刷新项目状态">刷新状态</button>
+        <div class="side-user">
+          <span class="avatar">教</span>
+          <span><strong>教务管理员</strong><small>年级排课组</small></span>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+      <div class="project-chip">
+        <strong>2024-2025 学年 第二学期排课项目</strong>
+        <span class="status-pill ok">可求解</span>
+      </div>
+      <div class="top-meta">
+        <span>同步于 23:35</span>
+        <button class="ghost-btn" data-toast="后台同步完成">同步</button>
+      </div>
+    </header>
+      <main class="content">
+        <section class="page-title">
+          <div><div class="eyebrow">方案诊断</div><h1>约束诊断与冲突处理</h1><p>按严重程度把阻断、警告和提示拆成可处理事项。</p></div>
+          <div class="title-actions"><button class="btn primary" data-toast="诊断试跑已启动">启动试跑</button></div>
+        </section>
+        <section class="status-strip compact">
+          <div class="metric ok"><span>严重问题</span><strong>0</strong><small>无发布阻断</small></div>
+          <div class="metric warn"><span>警告</span><strong>2</strong><small>需人工确认</small></div>
+          <div class="metric blue"><span>提示</span><strong>5</strong><small>不阻断求解</small></div>
+          <div class="metric "><span>试跑队列</span><strong>3</strong><small>等待验证</small></div>
+        </section>
+        <section class="screen-grid two-one">
+          <section class="panel span-main">
+            <div class="panel-head"><div><h2>诊断清单</h2><p>只显示当前方案的真实风险。</p></div><div class="segmented"><button class="is-active" data-severity-filter="all">全部</button><button data-severity-filter="warn">警告</button><button data-severity-filter="info">提示</button></div></div>
+            <div class="table-scroll"><table class="dense-table"><thead><tr><th>级别</th><th>对象</th><th>问题</th><th>建议动作</th></tr></thead><tbody>
+              <tr data-severity="warn"><td><span class="badge warn">警告</span></td><td>教师A</td><td>周三上午第3节与教研冲突</td><td><button class="mini-btn">生成替代</button></td></tr>
+              <tr data-severity="warn"><td><span class="badge warn">警告</span></td><td>匿名场地A</td><td>周二第6节容量不足</td><td><button class="mini-btn">换场地</button></td></tr>
+              <tr data-severity="info"><td><span class="badge blue">提示</span></td><td>匿名班级A</td><td>周课时偏高，共 38 节</td><td><button class="mini-btn">查看分布</button></td></tr>
+            </tbody></table></div>
+          </section>
+          <section class="panel ">
+          <div class="panel-head"><h2>处理建议</h2></div>
+          <div class="action-stack"><button class="btn primary" data-toast="已将替代方案加入试跑队列">加入试跑队列</button><button class="btn" data-toast="已标记为人工确认">标记已确认</button><button class="btn" data-toast="已导出诊断清单">导出诊断</button></div>
+        </section>
+          <section class="panel span-main">
+          <div class="panel-head"><h2>试跑队列</h2></div>
+          <div class="compact-list tall"><div><i class="dot blue"></i><span>匿名场地A改用匿名场地B</span><b>等待</b></div><div><i class="dot warn"></i><span>教师A第3节改为教师B代课</span><b>复核中</b></div><div><i class="dot ok"></i><span>匿名班级A课时均衡调整</span><b>通过</b></div></div>
+        </section>
+          <section class="panel ">
+          <div class="panel-head"><h2>诊断门禁</h2></div>
+          <div class="gate-list"><div><span></span><strong>严重问题为 0</strong><b>通过</b></div><div><span></span><strong>警告均有责任人</strong><b>通过</b></div><div><span></span><strong>发布说明已生成</strong><b>待补充</b></div></div>
+        </section>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../assets/command-center.js"></script>
+</body>
+</html>
