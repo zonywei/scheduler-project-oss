@@ -1095,13 +1095,26 @@ class SchedulerWebHandler(BaseHTTPRequestHandler):
                 confirmed=body.get("confirm") is True,
                 actor=self._actor(body),
             )
-            if rid and all(
-                not isinstance(item, dict)
-                or str(item.get("id") or "") != rid
-                or str(item.get("kind") or "") != NATURAL_LANGUAGE_RULE_KIND
-                for item in active
-            ):
-                active.append(next_rule)
+            replaced = False
+            revised_active = []
+            for item in active:
+                same_rule = (
+                    isinstance(item, dict)
+                    and str(item.get("id") or "") == rid
+                    and (
+                        str(item.get("kind") or "") == NATURAL_LANGUAGE_RULE_KIND
+                        or str(item.get("schema_version") or "") == RULE_DRAFT_SCHEMA_VERSION
+                    )
+                )
+                if same_rule:
+                    if not replaced:
+                        revised_active.append(next_rule)
+                        replaced = True
+                else:
+                    revised_active.append(item)
+            if not replaced:
+                revised_active.append(next_rule)
+            active = revised_active
         temporary["active"] = active
         return save_web_overrides(
             overrides,

@@ -105,6 +105,10 @@ docs/
 
 `verification/fixes/tests/test_engineering_hygiene.py` 会检查生成物是否被 Git 跟踪。发布前应以 `git status --short` 和门禁测试共同确认。
 
+## 参与贡献
+
+提交问题或改进前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
 ## License
 
 Apache-2.0; see [LICENSE](LICENSE). Bundled Cytoscape.js and Remix Icon assets retain their own copyright and license notices in their vendor files.

@@ -290,6 +290,36 @@ def test_web_add_and_remove_rule_preserves_manual_base_config(tmp_path: Path, mo
     assert removed["temporary_rules"]["active"] == []
 
 
+def test_web_reconfirming_rule_replaces_previous_revision(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config_service, "WEB_OVERRIDES_PATH", tmp_path / "web_overrides.yaml")
+    config_service.save_web_overrides(
+        {
+            "rules": {"hard_bans": {"teacher_day_bans": {"星期日": ["原有教师"]}}},
+            "temporary_rules": {"active": []},
+        }
+    )
+    handler = object.__new__(SchedulerWebHandler)
+    original = parse_natural_language_rule("教师A 周日晚自习禁排", known_teachers=["教师A"])
+    first = handler._apply_temp_rule({"rule": original, "confirm": True, "actor": "tester"}, reverse=False)
+    revised = parse_natural_language_rule("教师A 周六晚自习禁排", known_teachers=["教师A"])
+    revised["id"] = original["id"]
+
+    with pytest.raises(ValueError, match="明确确认"):
+        handler._apply_temp_rule({"rule": revised, "confirm": False, "actor": "tester"}, reverse=False)
+    assert config_service.load_web_overrides()["temporary_rules"]["active"] == first["temporary_rules"]["active"]
+
+    updated = handler._apply_temp_rule({"rule": revised, "confirm": True, "actor": "tester"}, reverse=False)
+    active = updated["temporary_rules"]["active"]
+    effective = materialize_active_rule_drafts({**updated["rules"], "temporary_rules": updated["temporary_rules"]})
+
+    assert len(active) == 1
+    assert active[0]["id"] == original["id"]
+    assert active[0]["day"] == "星期六"
+    assert active[0]["confirmation"]["confirmed_by"] == "tester"
+    assert effective["hard_bans"]["teacher_day_bans"]["星期日"] == ["原有教师"]
+    assert effective["hard_bans"]["teacher_day_bans"]["星期六"] == ["教师A"]
+
+
 def test_effective_config_materializes_confirmed_drafts_without_persisting_patch(tmp_path: Path) -> None:
     io_path = tmp_path / "io.yaml"
     rules_path = tmp_path / "rules.yaml"
