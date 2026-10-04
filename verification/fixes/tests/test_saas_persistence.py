@@ -8,7 +8,9 @@ import pytest
 
 from scheduler.app.nl_rules import parse_natural_language_rule
 from scheduler.app import config_service
+from scheduler.app.web import SchedulerWebHandler
 from scheduler.config.loader import load_effective_config
+from scheduler.domain.rule_drafts import materialize_active_rule_drafts
 from scheduler.platform import (
     PlatformDatabase,
     PlatformDatabaseSettings,
@@ -222,3 +224,48 @@ def test_sqlite_runtime_backend_drives_config_loader_and_detects_stale_saves(
     effective = load_effective_config("joint", {"io_path": io_path, "rules_path": rules_path})
     assert effective.rules_cfg["hard_bans"]["teacher_day_bans"]["星期日"] == ["教师A"]
     assert effective.rules_cfg["new_setting"] == {"enabled": True}
+
+
+def test_sqlite_rule_reconfirmation_replaces_active_revision_with_tenant_isolation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    store = _store(tmp_path)
+    school_a = store.create_organization(slug="school-a", name="学校A")
+    school_b = store.create_organization(slug="school-b", name="学校B")
+    initial = {
+        "io": {},
+        "rules": {"hard_bans": {"teacher_day_bans": {"星期日": ["原有教师"]}}},
+        "temporary_rules": {"active": []},
+    }
+    store.save_workspace(school_a.id, initial, expected_revision=0, actor_user_id="bootstrap")
+    store.save_workspace(school_b.id, initial, expected_revision=0, actor_user_id="bootstrap")
+    legacy_path = tmp_path / "legacy.yaml"
+    legacy_path.write_text("{}", encoding="utf-8")
+    monkeypatch.setenv("SCHEDULER_STATE_BACKEND", "sqlite")
+    monkeypatch.setenv("SCHEDULER_DATABASE_PATH", str(store.database.path))
+    monkeypatch.setenv("SCHEDULER_ORGANIZATION_ID", school_a.id)
+    monkeypatch.setattr(config_service, "WEB_OVERRIDES_PATH", legacy_path)
+
+    handler = object.__new__(SchedulerWebHandler)
+    original = parse_natural_language_rule("教师A 周日晚自习禁排", known_teachers=["教师A"])
+    handler._apply_temp_rule({"rule": original, "confirm": True, "actor": "admin-a"}, reverse=False)
+    revised = parse_natural_language_rule("教师A 周六晚自习禁排", known_teachers=["教师A"])
+    revised["id"] = original["id"]
+    with pytest.raises(ValueError, match="明确确认"):
+        handler._apply_temp_rule({"rule": revised, "confirm": False, "actor": "admin-a"}, reverse=False)
+    assert store.load_workspace(school_a.id).revision == 2
+
+    updated = handler._apply_temp_rule({"rule": revised, "confirm": True, "actor": "admin-a"}, reverse=False)
+    saved = store.load_workspace(school_a.id)
+    effective = materialize_active_rule_drafts({**updated["rules"], "temporary_rules": updated["temporary_rules"]})
+
+    assert saved.revision == 3
+    assert saved.updated_by == "admin-a"
+    assert len(saved.payload["temporary_rules"]["active"]) == 1
+    assert saved.payload["temporary_rules"]["active"][0]["day"] == "星期六"
+    assert effective["hard_bans"]["teacher_day_bans"]["星期日"] == ["原有教师"]
+    assert effective["hard_bans"]["teacher_day_bans"]["星期六"] == ["教师A"]
+    assert store.load_workspace(school_b.id).revision == 1
+    assert store.load_workspace(school_b.id).payload == initial
+    assert legacy_path.read_text(encoding="utf-8") == "{}"
