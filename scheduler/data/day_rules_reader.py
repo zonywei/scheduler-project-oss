@@ -108,8 +108,8 @@ def _read_sheet(rules_xlsx_path: str, sheet_name: str, web_tables: dict[str, Any
 
 
 def _read_teacher_positioning(pos_xlsx_path: str, web_tables: dict[str, Any] | None = None) -> pd.DataFrame:
-    rows = ((web_tables or {}).get("teacher_subjects") or []) if isinstance(web_tables, dict) else []
-    if isinstance(rows, list) and rows:
+    rows = web_tables.get("teacher_subjects") if isinstance(web_tables, dict) else None
+    if isinstance(rows, list):
         return normalize_teacher_table_frame(pd.DataFrame([row for row in rows if isinstance(row, dict)]))
     return normalize_teacher_table_frame(pd.read_excel(pos_xlsx_path, sheet_name=POS_SHEET))
 

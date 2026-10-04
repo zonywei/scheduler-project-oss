@@ -162,8 +162,8 @@ def start_solve(payload: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError("已有求解任务正在运行，请先暂停或等待完成")
 
     mode = str(payload.get("mode") or "joint")
-    if mode not in {"joint", "night"}:
-        raise ValueError("mode must be joint or night")
+    if mode not in {"course", "day", "joint", "night"}:
+        raise ValueError("mode must be course, day, joint or night")
     readiness = build_solve_readiness(mode)
     if not readiness.get("summary", {}).get("can_start_solver", False):
         blocking = [item for item in readiness.get("items", []) if item.get("blocking") and item.get("severity") == "error"]
@@ -565,10 +565,10 @@ def get_solve_status() -> dict[str, Any]:
         if _current_started_ts is not None:
             status["elapsed_seconds"] = max(0, int(time.time() - _current_started_ts))
     mode = str(status.get("mode") or "joint")
-    _attach_config_freshness(status, mode if mode in {"joint", "night"} else "joint")
+    _attach_config_freshness(status, mode if mode in {"course", "day", "joint", "night"} else "joint")
     readiness: dict[str, Any] = {}
     try:
-        readiness = build_solve_readiness(mode if mode in {"joint", "night"} else "joint")
+        readiness = build_solve_readiness(mode if mode in {"course", "day", "joint", "night"} else "joint")
     except Exception as exc:
         readiness = {"summary": {"can_publish": False, "errors": 1, "message": f"发布前校验失败：{exc}"}}
     status["current_readiness"] = readiness
@@ -853,9 +853,9 @@ def _status_is_placeholder(status: dict[str, Any]) -> bool:
 def _refresh_status_publish_context(status: dict[str, Any]) -> None:
     _drop_legacy_publish_review_state(status)
     mode = str(status.get("mode") or "joint")
-    _attach_config_freshness(status, mode if mode in {"joint", "night"} else "joint")
+    _attach_config_freshness(status, mode if mode in {"course", "day", "joint", "night"} else "joint")
     try:
-        readiness = build_solve_readiness(mode if mode in {"joint", "night"} else "joint")
+        readiness = build_solve_readiness(mode if mode in {"course", "day", "joint", "night"} else "joint")
     except Exception as exc:
         readiness = {"summary": {"can_publish": False, "errors": 1, "message": f"发布前校验失败：{exc}"}}
     status["current_readiness"] = readiness

@@ -41,6 +41,7 @@ def apply_rule_v2_constraints(
     *,
     grade_prefix: str = "",
     catalog_evidence: Mapping[str, int] | None = None,
+    respect_slot_order: bool = False,
 ) -> RuleV2CompileResult:
     """Compile active Rule V2 items and return their soft objective terms."""
     result = RuleV2CompileResult()
@@ -84,7 +85,7 @@ def apply_rule_v2_constraints(
         if constraint_type == "teacher_unavailable":
             affected = _compile_teacher_unavailable(model, data, dv, raw, result, grade_prefix)
         elif constraint_type == "prefer_period":
-            affected = _compile_prefer_period(model, data, dv, raw, result, grade_prefix)
+            affected = _compile_prefer_period(model, data, dv, raw, result, grade_prefix, respect_slot_order=respect_slot_order)
         elif constraint_type == "max_daily_lessons":
             affected = _compile_max_daily(model, data, dv, raw, result, grade_prefix)
         else:
@@ -149,15 +150,17 @@ def _compile_prefer_period(
     rule: Mapping[str, Any],
     result: RuleV2CompileResult,
     grade_prefix: str,
+    *,
+    respect_slot_order: bool = False,
 ) -> int:
     params = (rule.get("constraint") or {}).get("params") or {}
     period = str(params.get("period") or "").lower()
     affected = 0
     weight = _weight(rule)
     strength = str(rule.get("strength") or "soft")
-    slots_by_day = _ordered_slots_by_day(data.available_slots)
+    slots_by_day = _ordered_slots_by_day(data.available_slots, respect_slot_order=respect_slot_order)
     for cls, subj, slot, var, teacher in _iter_matching_variables(data, dv, rule, grade_prefix):
-        if _is_preferred_slot(slot, period, slots_by_day.get(slot.day, [])):
+        if _is_preferred_slot(slot, period, slots_by_day.get(slot.day, []), include_all_blocks=respect_slot_order):
             continue
         exception = _exception_mode(rule, cls, subj, teacher, slot, grade_prefix)
         if exception == "exclude":
@@ -332,24 +335,25 @@ def _weight(rule: Mapping[str, Any]) -> int:
         return 300
 
 
-def _ordered_slots_by_day(slots: Iterable[Slot]) -> dict[str, list[Slot]]:
+def _ordered_slots_by_day(slots: Iterable[Slot], *, respect_slot_order: bool = False) -> dict[str, list[Slot]]:
     order = {"早自习": 0, "上午": 1, "下午": 2}
     result: dict[str, list[Slot]] = {}
     for slot in slots:
         result.setdefault(slot.day, []).append(slot)
-    for day in result:
-        result[day] = sorted(result[day], key=lambda item: (order.get(item.block, 9), item.period))
+    if not respect_slot_order:
+        for day in result:
+            result[day] = sorted(result[day], key=lambda item: (order.get(item.block, 9), item.period))
     return result
 
 
-def _is_preferred_slot(slot: Slot, period: str, ordered: list[Slot]) -> bool:
+def _is_preferred_slot(slot: Slot, period: str, ordered: list[Slot], *, include_all_blocks: bool = False) -> bool:
     if period == "morning":
         return slot.block == "上午"
     if period == "afternoon":
         return slot.block == "下午"
     if period == "early":
         return slot.block == "早自习"
-    regular = [item for item in ordered if item.block != "早自习"]
+    regular = ordered if include_all_blocks else [item for item in ordered if item.block != "早自习"]
     if period == "first":
         return bool(regular) and slot == regular[0]
     if period == "last":

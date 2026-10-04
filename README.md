@@ -1,8 +1,10 @@
-# AI-Orchestrated Optimization
+# 通用中小学排课系统
 
-面向 AI Agent 的运筹优化框架。人类用自然语言描述业务痛点，AI 将需求拆解为规则、变量、约束、目标函数、求解配置和诊断动作，最后通过 Google OR-Tools CP-SAT 运行求解。
+面向小学、初中和高中的排课工作区。学校通过教学任务、可用时间、课时需求、资源和个性化规则定义业务，系统将已确认且支持的规则编译为 OR-Tools CP-SAT 模型，提供求解、解释、核对与导出。
 
-本仓库已经不再定位为单一排课系统。原 `scheduler/` 能力保留为 K12 排课示例和兼容应用；新的通用内核位于 `ai_orchestrated_optimization/`，用于承载 CP-SAT 可表达的分配、排班、路径、装箱、资源容量、覆盖、选择、匹配等离散优化问题。
+时间分类由学校决定；联合排课、白天、晚自习、周中、周末作为历史兼容能力保留。新增按自定义时间格和周期总课时求解的课程入口，真实三校 Web/API 验收与下一步路线见 [按业务定义排课问题](docs/business_driven_scheduling.md)。当前该入口仍使用七天周期；任意周期、日期例外与复杂资源能力需要继续扩展。
+
+`ai_orchestrated_optimization/` 保留为内部通用优化能力，产品主线围绕学校需求和可验证课表推进。
 
 ## WebMCP agent collaboration
 
@@ -34,7 +36,7 @@ docker compose --env-file deploy\.env -f deploy\compose.yaml -f deploy\compose.l
 
 - 规则第一：业务规则先形成可排序、可追踪的 `RuleSpec`，再进入建模和求解。
 - AI 友好：接口面向 Agent 读写，优先使用清晰的数据合同，而不是隐藏在脚本里的隐式业务逻辑。
-- 通用 CP-SAT：框架不绑定学校、班级、教师或课表；K12 排课只是一个示例域。当前通用后端覆盖 bool/int 变量、线性约束/线性域、reified/enforced 线性约束、布尔逻辑、Allowed/Forbidden Assignments、Element、Automaton、Inverse、Circuit、MultipleCircuit、AllDifferent、Interval、NoOverlap、NoOverlap2D、Cumulative、Reservoir、Abs/Max/Min/Multiplication/Division/Modulo Equality、线性目标，以及 Agent 迭代求解所需的 solver parameters、solution hints、assumptions、decision strategies 和 response stats。
+- 通用 CP-SAT：内部优化内核保持领域无关，学校业务由排课产品层表达。当前通用后端覆盖 bool/int 变量、线性约束/线性域、reified/enforced 线性约束、布尔逻辑、Allowed/Forbidden Assignments、Element、Automaton、Inverse、Circuit、MultipleCircuit、AllDifferent、Interval、NoOverlap、NoOverlap2D、Cumulative、Reservoir、Abs/Max/Min/Multiplication/Division/Modulo Equality、线性目标，以及 Agent 迭代求解所需的 solver parameters、solution hints、assumptions、decision strategies 和 response stats。
 - 全面脱敏：真实输入、历史输出、运行日志、临时产物、热启动池和截图不进入 GitHub 发布版本。
 - 可诊断：求解过程保留规则计划、应用顺序、求解状态和后续 Debug Agent 可消费的证据。
 
