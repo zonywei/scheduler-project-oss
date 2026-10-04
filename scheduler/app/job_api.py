@@ -148,8 +148,8 @@ def normalize_solve_request(payload: Mapping[str, Any]) -> dict[str, Any]:
     if unknown:
         raise ValueError("unsupported solve request fields: " + ", ".join(unknown))
     mode = str(payload.get("mode") or "joint").strip().lower()
-    if mode not in {"joint", "night"}:
-        raise ValueError("mode must be joint or night")
+    if mode not in {"course", "day", "joint", "night"}:
+        raise ValueError("mode must be course, day, joint or night")
     request = dict(payload)
     request["mode"] = mode
     request["time_limit_seconds"] = _bounded_int(payload.get("time_limit_seconds", 300), 10, 21_600, "time_limit_seconds")

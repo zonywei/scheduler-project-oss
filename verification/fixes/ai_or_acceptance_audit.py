@@ -4004,10 +4004,10 @@ def _documentation_positioning_check(repo_root: Path) -> FrameworkCheck:
         combined,
         (
             "AI-Orchestrated Optimization",
-            "本仓库已经不再定位为单一排课系统",
+            "通用中小学排课系统",
             "规则第一",
             "通用 CP-SAT",
-            "K12 排课只是一个示例域",
+            "产品主线围绕学校需求",
             "open_source_release_audit",
             "exact_cp_sat_shape_contract",
             "catalog_contract",
@@ -4015,7 +4015,7 @@ def _documentation_positioning_check(repo_root: Path) -> FrameworkCheck:
     )
     return FrameworkCheck(
         "documentation_positioning",
-        "文档必须把项目定位为 AI Agent 使用的通用运筹优化框架，并把 K12 排课降级为匿名示例域。",
+        "文档必须区分通用中小学排课产品主线与内部通用优化内核，保持规则优先和匿名开源边界。",
         (
             "README.md",
             "ARCHITECTURE.md",

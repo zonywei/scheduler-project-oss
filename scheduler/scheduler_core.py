@@ -26,6 +26,9 @@ class SchedulerCore:
         run_joint(grade_prefix=self.grade_prefix, io_path=self.io_path, rules_path=self.rules_path)
 
     def run_mode(self, mode: str) -> None:
+        if mode == "course":
+            from scheduler.course_solver import run_course
+            run_course(self.io_path, self.rules_path, grade_prefix=self.grade_prefix)
         if mode in ("night", "both"):
             self.run_night()
         if mode in ("day", "both"):
