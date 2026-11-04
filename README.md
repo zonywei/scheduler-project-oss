@@ -4,6 +4,12 @@
 
 本仓库已经不再定位为单一排课系统。原 `scheduler/` 能力保留为 K12 排课示例和兼容应用；新的通用内核位于 `ai_orchestrated_optimization/`，用于承载 CP-SAT 可表达的分配、排班、路径、装箱、资源容量、覆盖、选择、匹配等离散优化问题。
 
+## 效果图
+
+![课有序 · 排课项目计划](scheduler/app/static/assets/formal-project-preview.png)
+
+![排课结果 · 班级课表（匿名样例）](docs/images/scheduler-project-oss-2.png)
+
 ## WebMCP agent collaboration
 
 The web workspace includes a WebMCP progressive enhancement for compatible browsers. Five structured tools let a browser agent inspect project readiness, review rules, diagnose deterministic conflicts, save a server-validated rule draft for human approval, and prepare the shared Solve view. The tools deliberately do not activate rules, start a solve, or publish a timetable; those consequential steps remain visible human decisions.
