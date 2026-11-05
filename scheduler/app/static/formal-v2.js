@@ -486,7 +486,7 @@ function formalCurrentProjectSettings() {
     : FORMAL_WEEK_DAYS.filter((day) => rows.some((row) => Number(row?.[day] || 0) === 1));
   const savedCounts = { early: 0, morning: 0, afternoon: 0, evening: 0, ...asObject(saved.period_counts) };
   const derivedCounts = rows.reduce((counts, row) => {
-    const slot = String(row?.时段节次 || row?.节次 || "");
+    const slot = formalSlotLabel(row);
     if (slot.startsWith("早自习")) counts.early += 1;
     else if (slot.startsWith("上午")) counts.morning += 1;
     else if (slot.startsWith("下午")) counts.afternoon += 1;
@@ -519,9 +519,13 @@ function formalSubjectNames() {
   return Array.from(new Set([...fromTeachers, ...fromHours].map((item) => String(item).trim()).filter(Boolean)));
 }
 
+function formalSlotLabel(row) {
+  return String(row?.时段节次 || (row?.时段 ? `${row.时段}${row.节次}` : row?.节次) || "");
+}
+
 function formalFixedSlot(day, slot, className = state.formalCalendarClass) {
   if (!className) return null;
-  return asArray(state.dayRules?.fixed_slots).find((item) => String(item?.班级 || "") === className && String(item?.星期 || "") === day && String(item?.节次 || "") === slot) || null;
+  return asArray(state.dayRules?.fixed_slots).find((item) => (String(item?.作用范围 || "").toUpperCase() === "ALL" || String(item?.班级 || "") === className) && String(item?.星期 || "") === day && formalSlotLabel(item) === slot) || null;
 }
 
 function formalCalendarCellValue(row, day, slot) {
@@ -536,7 +540,7 @@ function formalCalendarRows() {
   if (!rows.length) return `<div class="calendar-empty"><i class="ri-calendar-schedule-line" aria-hidden="true"></i><h3>先设置每天有几节课</h3><p>系统会生成一周空白课表，再逐格选择“排课、禁排或固定课程”。</p><button type="button" data-action="open-period-settings">设置节次</button></div>`;
   const conflicts = formalCalendarConflicts();
   return `<div class="weekly-schedule-wrap"><div class="weekly-schedule-toolbar"><div><strong>一周班级空白课表</strong><span>每个格子都可以直接选择状态</span></div><label>固定课程班级<select id="formalCalendarClass" data-control="formal-calendar-class"><option value="">选择班级</option>${classes.map((name) => `<option value="${escapeAttr(name)}" ${state.formalCalendarClass === name ? "selected" : ""}>${escapeHtml(name)}</option>`).join("")}</select></label><button type="button" class="secondary" data-action="open-period-settings">修改节次</button></div><div class="weekly-schedule-grid" style="--week-days:${FORMAL_WEEK_DAYS.length}"><div class="weekly-schedule-head">节次</div>${FORMAL_WEEK_DAYS.map((day) => `<div class="weekly-schedule-head">${FORMAL_DAY_SHORT[day]}</div>`).join("")}${rows.map((row) => {
-    const slot = String(row?.时段节次 || row?.节次 || "节次");
+    const slot = formalSlotLabel(row);
     return `<div class="weekly-schedule-slot"><strong>${escapeHtml(slot)}</strong><small>${escapeHtml(slot.replace(/\d+$/, ""))}</small></div>${FORMAL_WEEK_DAYS.map((day) => {
       const value = formalCalendarCellValue(row, day, slot);
       const fixed = formalFixedSlot(day, slot);
@@ -559,7 +563,7 @@ function formalCalendarPanel() {
         <div class="field-group full"><label for="formalPublicRest">固定公休</label><input id="formalPublicRest" value="${escapeAttr(settings.public_rest)}" placeholder="例如：周六、周日；法定节假日按校历执行"></div>
       </div>
     </section>
-    <section class="formal-card foundation-panel foundation-schedule-card"><div class="foundation-panel-heading"><div><span>02</span><div><h2>每日作息</h2><p>先设置早、上午、下午和晚自习节数，再在周课表里逐格选择。</p></div></div></div>${formalCalendarRows()}</section>
+    <section class="formal-card foundation-panel foundation-schedule-card"><div class="foundation-panel-heading"><div><span>02</span><div><h2>每日作息</h2><p>按业务命名时段和节次，再逐格选择可排、禁排或固定安排。</p></div></div></div>${formalCalendarRows()}</section>
   </div>`;
 }
 
@@ -570,13 +574,30 @@ function formalOpenPeriodSettings() {
   const root = $("modalRoot");
   const counts = formalCurrentProjectSettings().period_counts;
   root.hidden = false;
+  if (state.solveMode === "course") {
+    const labels = asArray(state.dayRules?.time_grid).map(formalSlotLabel).filter(Boolean).join("\n");
+    root.innerHTML = `<div class="formal-period-modal" role="dialog" aria-modal="true" aria-labelledby="formalPeriodTitle"><header><h2 id="formalPeriodTitle">设置业务时间格</h2><p>每行一个时段节次，例如课程1、社团1、夜间研学1。名称由学校决定。</p></header><textarea id="formalCustomSlots" rows="10" placeholder="课程1&#10;课程2&#10;社团1">${escapeHtml(labels)}</textarea><footer><button type="button" class="secondary" data-action="close-modal">取消</button><button type="button" data-action="save-period-settings">生成时间格</button></footer></div>`;
+    return;
+  }
   root.innerHTML = `<div class="formal-period-modal" role="dialog" aria-modal="true" aria-labelledby="formalPeriodTitle"><header><span>设置作息</span><h2 id="formalPeriodTitle">每天各时间段有几节课？</h2><p>保存后会重新生成一周课表；已有同名节次的设置会保留。</p></header><div class="period-count-grid">${[["early", "早自习"], ["morning", "上午"], ["afternoon", "下午"], ["evening", "晚自习"]].map(([key, label]) => `<label><span>${label}</span><input id="formalPeriod_${key}" type="number" min="0" max="12" value="${Number(counts[key] || 0)}"><small>节</small></label>`).join("")}</div><footer><button type="button" class="secondary" data-action="close-modal">取消</button><button type="button" data-action="save-period-settings">生成周课表</button></footer></div>`;
 }
 
 function formalApplyPeriodSettings() {
+  if (state.solveMode === "course") {
+    const labels = String($("formalCustomSlots")?.value || "").split(/\r?\n/).map((value) => value.trim()).filter(Boolean);
+    if (!labels.length || new Set(labels).size !== labels.length || labels.some((label) => !/^.+?[1-9]\d*$/.test(label))) throw new Error("时间格须唯一，格式如课程1、社团1");
+    const old = new Map(asArray(state.dayRules?.time_grid).map((row) => [formalSlotLabel(row), row]));
+    const active = new Set(formalCurrentProjectSettings().active_days);
+    const rows = labels.map((label) => ({ 时段节次: label, ...Object.fromEntries(FORMAL_WEEK_DAYS.map((day) => [day, old.has(label) ? Number(old.get(label)[day] || 0) : Number(active.has(day))])) }));
+    state.dayRules = { ...state.dayRules, time_grid: rows };
+    closeModal();
+    renderShell();
+    toast(`已生成 ${rows.length} 个业务时间格`);
+    return;
+  }
   const labels = { early: "早自习", morning: "上午", afternoon: "下午", evening: "晚自习" };
   const oldRows = asArray(state.dayRules?.time_grid);
-  const oldBySlot = new Map(oldRows.map((row) => [String(row?.时段节次 || row?.节次 || ""), row]));
+  const oldBySlot = new Map(oldRows.map((row) => [formalSlotLabel(row), row]));
   const settings = formalCurrentProjectSettings();
   const active = new Set(settings.active_days);
   const counts = {};
@@ -618,9 +639,15 @@ function formalSaveFixedCalendarCell(day, slot) {
   if (!className || !subject) throw new Error("请选择班级和课程名称");
   const teacherRow = state.teachers.find((row) => String(row?.班级 || "") === className) || {};
   const teacher = String(teacherRow?.[subject] || "").trim();
-  const fixed = asArray(state.dayRules?.fixed_slots).filter((item) => !(String(item?.班级 || "") === className && String(item?.星期 || "") === day && String(item?.节次 || "") === slot));
-  fixed.push({ 班级: className, 星期: day, 节次: slot, 学科: subject, 教师: teacher });
-  const rows = asArray(state.dayRules?.time_grid).map((row) => String(row?.时段节次 || row?.节次 || "") === slot ? { ...row, [day]: 1 } : row);
+  const fixed = asArray(state.dayRules?.fixed_slots).filter((item) => !((String(item?.作用范围 || "").toUpperCase() === "ALL" || String(item?.班级 || "") === className) && String(item?.星期 || "") === day && formalSlotLabel(item) === slot));
+  if (state.solveMode === "course") {
+    const parts = slot.match(/^(.+?)(\d+)$/);
+    if (!parts) throw new Error("固定安排的时间格格式无效");
+    fixed.push({ 作用范围: "CLASS", 班级: className, 星期: day, 时段: parts[1], 节次: Number(parts[2]), 学科: subject });
+  } else {
+    fixed.push({ 班级: className, 星期: day, 节次: slot, 学科: subject, 教师: teacher });
+  }
+  const rows = asArray(state.dayRules?.time_grid).map((row) => formalSlotLabel(row) === slot ? { ...row, [day]: 1 } : row);
   state.dayRules = { ...state.dayRules, fixed_slots: fixed, time_grid: rows };
   state.formalCalendarClass = className;
   closeModal();
@@ -630,9 +657,9 @@ function formalSaveFixedCalendarCell(day, slot) {
 
 function formalCalendarConflicts() {
   const rows = asArray(state.dayRules?.time_grid);
-  const bySlot = new Map(rows.map((row) => [String(row?.时段节次 || row?.节次 || ""), row]));
+  const bySlot = new Map(rows.map((row) => [formalSlotLabel(row), row]));
   return asArray(state.dayRules?.fixed_slots).filter((item) => {
-    const row = bySlot.get(String(item?.节次 || ""));
+    const row = bySlot.get(formalSlotLabel(item));
     return row && Number(row?.[String(item?.星期 || "")] || 0) !== 1;
   });
 }
@@ -644,7 +671,7 @@ function formalChangeCalendarCell(select) {
   const day = select.dataset.day || "";
   const slot = select.dataset.slot || "";
   const value = select.value || "open";
-  const row = asArray(state.dayRules?.time_grid).find((item) => String(item?.时段节次 || item?.节次 || "") === slot);
+  const row = asArray(state.dayRules?.time_grid).find((item) => formalSlotLabel(item) === slot);
   if (!row || !FORMAL_WEEK_DAYS.includes(day)) return;
   if (value === "fixed") {
     select.value = formalCalendarCellValue(row, day, slot);
@@ -653,7 +680,7 @@ function formalChangeCalendarCell(select) {
   }
   row[day] = value === "open" ? 1 : 0;
   if (state.formalCalendarClass) {
-    state.dayRules.fixed_slots = asArray(state.dayRules?.fixed_slots).filter((item) => !(String(item?.班级 || "") === state.formalCalendarClass && String(item?.星期 || "") === day && String(item?.节次 || "") === slot));
+    state.dayRules.fixed_slots = asArray(state.dayRules?.fixed_slots).filter((item) => !(String(item?.班级 || "") === state.formalCalendarClass && String(item?.星期 || "") === day && formalSlotLabel(item) === slot));
   }
   renderShell();
   const conflicts = formalCalendarConflicts();
@@ -699,7 +726,7 @@ function formalFoundationTable(step) {
   }
   const tableKey = step === "hours" ? "subject_hours" : "fixed_slots";
   const title = step === "hours" ? "各年级各学科课时" : "场地与固定事项";
-  const description = step === "hours" ? "设置早自习、周中和周末课时；班级差异可在覆盖表中单独调整。" : "录入固定课位、统一公休、场地占用和不可移动的教务事项。";
+  const description = step === "hours" ? "按学校确认的排课周期设置课时；班级差异可在覆盖表中单独调整。" : "录入固定课位、统一公休、场地占用和不可移动的教务事项。";
   const rows = asArray(state.dayRules?.[tableKey]);
   return `<section class="formal-card foundation-data-card"><div class="foundation-data-head"><div><span class="foundation-start-label">从 0 开始设置</span><h2>${title}</h2><p>${description}</p></div><div class="card-actions"><button type="button" class="secondary" data-action="download-foundation-template" data-table="${tableKey}">下载 Excel 模板</button><label class="upload-button">上传已填写表格<input type="file" hidden accept=".xlsx,.csv,text/csv" data-upload="day-rule" data-table="${tableKey}"></label><button type="button" data-action="add-foundation-row" data-table="${tableKey}">手动新增</button><button type="button" data-action="save-foundation-step">保存</button></div></div>${rows.length ? renderEditableTable("day", rows, { tableKey }) : `<div class="foundation-upload-empty"><i class="ri-file-excel-2-line" aria-hidden="true"></i><h3>当前还没有数据</h3><p>推荐下载 Excel 模板批量填写；也可以点击“手动新增”逐行录入。</p></div>`}</section>`;
 }
@@ -909,7 +936,7 @@ function formalRuleChecks() {
 }
 
 function formalVisualRuleSlots() {
-  return asArray(state.dayRules?.time_grid).map((row) => String(row?.时段节次 || row?.节次 || "")).filter(Boolean);
+  return asArray(state.dayRules?.time_grid).map((row) => formalSlotLabel(row)).filter(Boolean);
 }
 
 function formalVisualCellKey(day, slot) {
@@ -927,12 +954,12 @@ function formalVisualRuleConflicts() {
   const action = state.visualRuleAction || "ban";
   const conflicts = [];
   asArray(state.dayRules?.subject_bans).forEach((item) => {
-    const key = formalVisualCellKey(String(item?.星期 || ""), String(item?.节次 || ""));
+    const key = formalVisualCellKey(String(item?.星期 || ""), formalSlotLabel(item));
     if (!selected.has(key) || String(item?.学科 || "") !== subject) return;
     conflicts.push({ tone: action === "ban" ? "overlap" : "conflict", title: action === "ban" ? "与已有禁排规则重复" : "与已有学科禁排冲突", detail: `${item.学科}${FORMAL_DAY_SHORT[item.星期] || item.星期}${item.节次}` });
   });
   asArray(state.dayRules?.fixed_slots).forEach((item) => {
-    const key = formalVisualCellKey(String(item?.星期 || ""), String(item?.节次 || ""));
+    const key = formalVisualCellKey(String(item?.星期 || ""), formalSlotLabel(item));
     if (!selected.has(key)) return;
     if (action === "ban" && String(item?.学科 || "") === subject) conflicts.push({ tone: "conflict", title: "与固定课程冲突", detail: `${item.班级 || "班级"}已固定${item.学科}` });
     if (action === "fixed" && String(item?.班级 || "") === className && String(item?.学科 || "") !== subject) conflicts.push({ tone: "conflict", title: "同一班级同一时间已有课程", detail: `当前为${item.学科 || "固定事项"}` });
@@ -1000,14 +1027,14 @@ async function formalSaveVisualRule() {
     const teacher = String(teacherRow?.[subject] || "").trim();
     const rows = asArray(state.dayRules?.fixed_slots).map(stripRowIndex);
     selected.forEach(([day, slot]) => {
-      const exists = rows.some((item) => String(item?.班级 || "") === className && String(item?.星期 || "") === day && String(item?.节次 || "") === slot && String(item?.学科 || "") === subject);
+      const exists = rows.some((item) => (String(item?.作用范围 || "").toUpperCase() === "ALL" || String(item?.班级 || "") === className) && String(item?.星期 || "") === day && formalSlotLabel(item) === slot && String(item?.学科 || "") === subject);
       if (!exists) rows.push({ 班级: className, 星期: day, 节次: slot, 学科: subject, 教师: teacher });
     });
     await api("/api/day-rules", { method: "POST", body: { table: "fixed_slots", rows, source: "rules.visual_timetable", reason: `课表式规则：${className}${subject}固定 ${selected.length} 格`, actor: "web" } });
   } else {
     const rows = asArray(state.dayRules?.subject_bans).map(stripRowIndex);
     selected.forEach(([day, slot]) => {
-      const exists = rows.some((item) => String(item?.学科 || "") === subject && String(item?.星期 || "") === day && String(item?.节次 || "") === slot);
+      const exists = rows.some((item) => String(item?.学科 || "") === subject && String(item?.星期 || "") === day && formalSlotLabel(item) === slot);
       if (!exists) rows.push({ 学科: subject, 星期: day, 节次: slot, 原因: "课表式规则设置" });
     });
     await api("/api/day-rules", { method: "POST", body: { table: "subject_bans", rows, source: "rules.visual_timetable", reason: `课表式规则：${subject}禁排 ${selected.length} 格`, actor: "web" } });
@@ -1202,7 +1229,7 @@ function formalSolveEvents(status) {
 function formalSolveInputFacts() {
   const classes = state.teachers.length;
   const teachers = new Set(state.teachers.flatMap((row) => Object.entries(row || {}).filter(([key]) => !["班级", "班主任性别"].includes(key)).map(([, value]) => String(value || "").trim()).filter(Boolean))).size;
-  const tasks = asArray(state.dayRules?.subject_hours).reduce((sum, row) => sum + Number(row?.周中课时 || 0) + Number(row?.周末课时 || 0) + Number(row?.早自习课时 || 0), 0);
+  const tasks = asArray(state.dayRules?.subject_hours).reduce((sum, row) => sum + Number(row?.周期课时 || row?.周中课时 || 0) + Number(row?.周末课时 || 0) + Number(row?.早自习课时 || 0), 0);
   const modelStats = asObject(state.readiness?.modeling?.stats);
   return [["基础数据", "已确认"], ["规则版本", `v${state.rulesV2?.revision || 0}`], ["规则应用", state.readiness?.modeling?.ready ? "已通过" : "未通过"], ["周课时标准", tasks || asArray(state.dayRules?.subject_hours).length], ["教师", teachers], ["班级", classes]];
 }
@@ -1598,7 +1625,7 @@ handleAction = async function handleActionFormal(action, target) {
   }
   if (action === "download-foundation-template") {
     state.selectedDayRule = target.dataset.table || "time_grid";
-    download(`/api/day-rules/template?table=${encodeURIComponent(state.selectedDayRule)}&format=xlsx`);
+    download(`/api/day-rules/template?table=${encodeURIComponent(state.selectedDayRule)}&format=xlsx&mode=${encodeURIComponent(state.solveMode)}`);
     return;
   }
   if (action === "add-foundation-row") {

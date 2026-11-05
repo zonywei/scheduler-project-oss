@@ -299,13 +299,13 @@ class SchedulerWebHandler(BaseHTTPRequestHandler):
                 label = DAY_RULE_TABLE_LABELS.get(table_key, table_key)
                 if str((query.get("format") or ["xlsx"])[0]).lower() == "csv":
                     self._send_file_bytes(
-                        build_day_rule_table_template_csv(table_key),
+                        build_day_rule_table_template_csv(table_key, mode=str((query.get("mode") or ["joint"])[0])),
                         "text/csv; charset=utf-8",
                         f"{label}_导入模板.csv",
                     )
                 else:
                     self._send_file_bytes(
-                        build_day_rule_table_template_xlsx(table_key),
+                        build_day_rule_table_template_xlsx(table_key, mode=str((query.get("mode") or ["joint"])[0])),
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         f"{label}_导入模板.xlsx",
                     )
@@ -1183,7 +1183,7 @@ def _slot_context_from_time_grid(rows: Any) -> dict[str, list[str]]:
     for row in rows:
         if not isinstance(row, Mapping):
             continue
-        label = str(row.get("时段节次") or row.get("节次") or "").strip()
+        label = str(row.get("时段节次") or (f"{row['时段']}{row['节次']}" if row.get("时段") and row.get("节次") else row.get("节次")) or "").strip()
         if not label:
             continue
         context.setdefault(label, []).append(label)

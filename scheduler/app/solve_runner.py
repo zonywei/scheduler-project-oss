@@ -108,7 +108,8 @@ def collect_artifacts(run_dir: Path, started_at_ts: float, ended_at_ts: float | 
     output_dir = PROJECT_ROOT / "outputs"
     patterns = ("*.xlsx", "*.json", "*.yaml", "*.yml", "*.txt", "*.csv", "*.log", "*.zip")
     files: list[Path] = []
-    for root in (run_dir, output_dir):
+    roots = (run_dir,) if _read_json(run_dir / "status.json").get("mode") == "course" else (run_dir, output_dir)
+    for root in roots:
         if not root.exists():
             continue
         for pattern in patterns:
@@ -312,7 +313,7 @@ def _refresh_status_publish_context(status: dict[str, Any]) -> None:
     mode = str(status.get("mode") or "joint")
     _hydrate_status_config_freshness(status, mode=mode)
     try:
-        readiness = build_solve_readiness(mode if mode in {"joint", "night"} else "joint")
+        readiness = build_solve_readiness(mode if mode in {"course", "day", "joint", "night"} else "joint")
     except Exception as exc:
         readiness = {"summary": {"can_publish": False, "errors": 1, "message": f"发布前校验失败：{exc}"}}
     status["current_readiness"] = readiness
@@ -329,7 +330,7 @@ def _refresh_status_publish_context(status: dict[str, Any]) -> None:
 
 def _hydrate_status_config_freshness(status: dict[str, Any], *, mode: str) -> None:
     try:
-        current = build_effective_config_fingerprint(mode if mode in {"joint", "night"} else "joint")
+        current = build_effective_config_fingerprint(mode if mode in {"course", "day", "joint", "night"} else "joint")
     except Exception:
         return
     status["current_config_fingerprint"] = current
@@ -598,6 +599,8 @@ def run(args: argparse.Namespace) -> int:
             "stop_file": str(stop_file),
         },
     }
+    if args.mode == "course":
+        io_override["output"] = {"dir": str(run_dir)}
     rules_override = {
         "solve": {
             "time_limit_seconds": int(args.time_limit_seconds),
@@ -670,7 +673,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run scheduler solve from Web UI")
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--run-dir", required=True)
-    parser.add_argument("--mode", choices=["joint", "night"], default="joint")
+    parser.add_argument("--mode", choices=["course", "day", "joint", "night"], default="joint")
     parser.add_argument("--grade-prefix", default="高二")
     parser.add_argument("--time-limit-seconds", type=int, default=300)
     parser.add_argument("--workers", type=int, default=8)

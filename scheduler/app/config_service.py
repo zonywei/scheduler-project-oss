@@ -303,8 +303,8 @@ def build_effective_config_fingerprint(mode: str = "joint") -> dict[str, Any]:
 
 def list_teacher_subject_rows() -> list[dict[str, Any]]:
     effective = load_effective_config("joint", {"io_path": IO_PATH, "rules_path": RULES_PATH})
-    web_rows = (((effective.io_cfg.get("web_tables", {}) or {}).get("teacher_subjects")) or [])
-    if isinstance(web_rows, list) and web_rows:
+    web_rows = (effective.io_cfg.get("web_tables", {}) or {}).get("teacher_subjects")
+    if isinstance(web_rows, list):
         return [dict(row, row_index=int(idx)) for idx, row in enumerate(web_rows) if isinstance(row, dict)]
     tt_cfg = effective.io_cfg.get("teacher_table", {}) or {}
     path = _resolve_project_path(tt_cfg.get("path"))
@@ -489,22 +489,19 @@ def load_day_rule_tables() -> dict[str, list[dict[str, Any]]]:
     effective = load_effective_config("joint", {"io_path": IO_PATH, "rules_path": RULES_PATH})
     day_cfg = effective.io_cfg.get("day", {}) or {}
     path = _resolve_project_path(day_cfg.get("rules_path"))
-    if path is None:
-        return {}
-    tables = {
-        "time_grid": _sheet_rows(path, SHEET_TIME_GRID),
-        "fixed_slots": _sheet_rows(path, SHEET_FIXED),
-        "subject_hours": _sheet_rows(path, SHEET_HOURS),
-        "subject_bans": _sheet_rows(path, SHEET_SUBJECT_BANS),
-        "class_overrides": _sheet_rows(path, SHEET_OVERRIDES),
-        "days": [{"day": day} for day in ALL_DAYS],
+    web_day_rules = (effective.io_cfg.get("web_tables", {}) or {}).get("day_rules") or {}
+    sheets = {
+        "time_grid": SHEET_TIME_GRID,
+        "fixed_slots": SHEET_FIXED,
+        "subject_hours": SHEET_HOURS,
+        "subject_bans": SHEET_SUBJECT_BANS,
+        "class_overrides": SHEET_OVERRIDES,
     }
-    web_day_rules = (((effective.io_cfg.get("web_tables", {}) or {}).get("day_rules")) or {})
-    if isinstance(web_day_rules, dict):
-        for key in ("time_grid", "fixed_slots", "subject_hours", "subject_bans", "class_overrides"):
-            rows = _clean_rows(web_day_rules.get(key, []))
-            if rows:
-                tables[key] = rows
+    tables = {}
+    for key, sheet in sheets.items():
+        rows = web_day_rules.get(key) if isinstance(web_day_rules, dict) else None
+        tables[key] = _clean_rows(rows) if isinstance(rows, list) else (_sheet_rows(path, sheet) if path else [])
+    tables["days"] = [{"day": day} for day in ALL_DAYS]
     return tables
 
 
@@ -552,15 +549,27 @@ def save_day_rule_table(
     return save_web_overrides(overrides, actor_user_id=actor, reason=reason or source)
 
 
-def build_day_rule_table_template_csv(table_key: str) -> bytes:
+def _course_template_shape(table_key: str) -> tuple[list[str], dict[str, Any]]:
+    samples = {
+        "time_grid": {"时段节次": "课程1", **{day: int(day in ALL_DAYS[:5]) for day in ALL_DAYS}},
+        "subject_hours": {"学科": "语文", "周期课时": 5},
+        "class_overrides": {"班级": "三年级1班", "学科": "语文", "周期课时": 6},
+        "fixed_slots": {"作用范围": "CLASS", "班级": "三年级1班", "星期": "星期一", "时段": "课程", "节次": 1, "学科": "班会"},
+        "subject_bans": {"学科": "语文", "禁排星期": "星期一", "禁排时段": "课程", "节次": 1},
+    }
+    sample = samples[table_key]
+    return list(sample), sample
+
+
+def build_day_rule_table_template_csv(table_key: str, *, mode: str = "joint") -> bytes:
     table_key = _validate_day_rule_import_table(table_key)
-    columns, sample = _day_rule_table_template_shape(table_key)
+    columns, sample = _course_template_shape(table_key) if mode == "course" else _day_rule_table_template_shape(table_key)
     return pd.DataFrame([sample], columns=columns).to_csv(index=False, lineterminator="\n").encode("utf-8-sig")
 
 
-def build_day_rule_table_template_xlsx(table_key: str) -> bytes:
+def build_day_rule_table_template_xlsx(table_key: str, *, mode: str = "joint") -> bytes:
     table_key = _validate_day_rule_import_table(table_key)
-    columns, sample = _day_rule_table_template_shape(table_key)
+    columns, sample = _course_template_shape(table_key) if mode == "course" else _day_rule_table_template_shape(table_key)
     label = DAY_RULE_TABLE_LABELS.get(table_key, table_key)
     buffer = BytesIO()
     with create_excel_writer(buffer) as writer:
@@ -685,6 +694,16 @@ def _parse_day_rule_table_frame(table_key: str, df: pd.DataFrame) -> dict[str, A
     key = _validate_day_rule_import_table(table_key)
     columns, _sample = _day_rule_table_template_shape(key)
     normalized_columns = {str(col).strip("\ufeff ").strip(): col for col in df.columns}
+    if key in {"subject_hours", "class_overrides"} and "周期课时" in normalized_columns:
+        columns = (["班级"] if key == "class_overrides" else []) + ["学科", "周期课时"]
+    elif key == "time_grid" and {"时段", "节次"}.issubset(normalized_columns):
+        columns = ["时段", "节次"] + (["星期"] if "星期" in normalized_columns else [day for day in ALL_DAYS if day in normalized_columns])
+        if "可排" in normalized_columns:
+            columns.append("可排")
+    elif key == "fixed_slots" and {"作用范围", "时段"}.issubset(normalized_columns):
+        columns = ["作用范围", "班级", "星期", "时段", "节次", "学科"]
+    elif key == "subject_bans" and "禁排时段" in normalized_columns:
+        columns = ["学科", "禁排星期", "禁排时段", "节次"]
     missing = [col for col in columns if col not in normalized_columns]
     if missing:
         raise ValueError(f"{DAY_RULE_TABLE_LABELS.get(key, key)}导入缺少必需列：{', '.join(missing)}")

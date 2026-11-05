@@ -375,6 +375,11 @@ def parse_rule_v2_local(
     }
     day_pattern = r"(?:周[一二三四五六日天]|星期[一二三四五六日])"
     slot_pattern = r"(?:(?:上午|下午|早上|早自习)(?:第?\d+节)?|第\d+节)"
+    if slot_context:
+        configured_aliases = [str(key) for key in slot_context if str(key).strip()]
+        if configured_aliases:
+            aliases_pattern = "|".join(re.escape(alias) for alias in sorted(configured_aliases, key=len, reverse=True))
+            slot_pattern = f"(?:{aliases_pattern}|{slot_pattern})"
     body = source.rstrip("。.!！").strip()
     exceptions = []
     exception_match = re.search(
@@ -528,7 +533,7 @@ def _extract_slots(source: str, *, slot_context: Mapping[str, Iterable[str]] | N
     if isinstance(values, str):
         return []
     slots = list(dict.fromkeys(str(value).strip() for value in values))
-    if not slots or any(not re.fullmatch(r"(?:上午|下午)[1-9]\d*|早自习(?:[1-9]\d*)?", value) for value in slots):
+    if not slots or any(not re.fullmatch(r"[^\s]{1,80}[1-9]\d*|早自习", value) for value in slots):
         return []
     normalized_expression = expression.replace("早上", "上午")
     block = re.fullmatch(r"上午|下午|早自习", normalized_expression)

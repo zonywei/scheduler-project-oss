@@ -30,6 +30,7 @@ PYTEST_GATE: tuple[str, ...] = (
     "verification/fixes/tests/test_ui_source_of_truth.py",
     "verification/fixes/tests/test_rule_instance_contract.py",
     "verification/fixes/tests/test_rule_v2.py",
+    "verification/fixes/tests/test_course_scheduling.py",
     "verification/fixes/tests/test_school_problem_adapter.py",
     "verification/fixes/tests/test_rule_execution_plan.py",
     "verification/fixes/tests/test_profile_catalog_validation.py",

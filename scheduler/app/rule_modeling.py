@@ -35,7 +35,7 @@ def build_rule_modeling_receipt(
     day_rule_tables: Mapping[str, list[dict[str, Any]]] | None = None,
 ) -> dict[str, Any]:
     """Construct the mandatory/core and active Rule V2 model without solving it."""
-    normalized_mode = mode if mode in {"joint", "night"} else "joint"
+    normalized_mode = mode if mode in {"course", "day", "joint", "night"} else "joint"
     try:
         evidence, stats, custom = _compile(
             normalized_mode,
@@ -131,11 +131,29 @@ def _compile(
     evidence: dict[str, int] = {}
     model_variables = 0
     model_constraints = 0
-    roster_enabled = bool((rules_cfg.get("checkin") or {}).get("enabled", False))
+    roster_enabled = mode not in {"course", "day"} and bool((rules_cfg.get("checkin") or {}).get("enabled", False))
     custom_rows: list[dict[str, Any]] = []
     compiled_bindings: set[str] = set()
 
-    if mode == "joint":
+    if mode == "course":
+        from scheduler.course_solver import build_course_model
+        model = cp_model.CpModel()
+        data, dv, custom_compile = build_course_model(model, io_cfg, rules_cfg)
+        evidence.update({
+            "system.calendar.active_slot_only": len(data.available_slots),
+            "system.day.fixed_slot_integrity": len(data.fixed_assign),
+            "system.assignment.teacher_mapping_required": len(data.cls_subj_teacher),
+            "system.hard_unavailability": sum(len(v) for v in data.subject_ban_slots.values()),
+            "joint.day.one_subject_per_slot": len(data.classes) * len(data.available_slots),
+            "joint.day.subject_hour_constraints": len(data.req_hours),
+            "joint.day.teacher_no_conflict": len(data.cls_subj_teacher) * len(data.available_slots),
+        })
+        compiled_bindings.update(evidence)
+        custom_rows = _custom_receipts(rules_cfg, custom_compile.diagnostics)
+        model_variables = len(model.Proto().variables)
+        model_constraints = len(model.Proto().constraints)
+
+    if mode in {"day", "joint"}:
         model = cp_model.CpModel()
         day_cfg = io_cfg.get("day") if isinstance(io_cfg.get("day"), Mapping) else {}
         rules_path = _resolve(base_dir, day_cfg.get("rules_path") or "白天规则.xlsx")
@@ -172,38 +190,39 @@ def _compile(
         model_variables += len(model.Proto().variables)
         model_constraints += len(model.Proto().constraints)
 
-    night_model = cp_model.CpModel()
-    night_io = copy.deepcopy(io_cfg)
-    teacher_cfg = night_io.get("teacher_table") if isinstance(night_io.get("teacher_table"), Mapping) else {}
-    if teacher_cfg.get("path"):
-        teacher_cfg["path"] = str(_resolve(base_dir, teacher_cfg["path"]))
-        night_io["teacher_table"] = teacher_cfg
-    classes, cst, ts_map, male_heads, female_heads = read_teacher_table(night_io, rules_cfg)
-    days = list((rules_cfg.get("calendar") or {}).get("days") or [])
-    periods = list((rules_cfg.get("calendar") or {}).get("periods") or [])
-    night_vars = build_variables(night_model, classes, cst, days, periods)
-    night_vars.update(build_checkin_variables(night_model, male_heads, female_heads, days))
-    ctx = {
-        "classes": classes,
-        "cst": cst,
-        "ts": ts_map,
-        "male_heads": male_heads,
-        "female_heads": female_heads,
-        "days": days,
-        "periods": periods,
-    }
-    evidence["joint.night.hard_base"] = _apply_delta(night_model, apply_hard_base, night_vars, ctx, rules_cfg)
-    evidence["joint.night.hard_teacher_limits"] = _apply_delta(night_model, apply_hard_teacher_limits, night_vars, ctx, rules_cfg)
-    evidence["system.hard_unavailability"] = evidence.get("system.hard_unavailability", 0) + _apply_delta(
-        night_model, apply_hard_bans, night_vars, ctx, rules_cfg
-    )
-    if roster_enabled:
-        evidence["joint.night.checkin"] = _apply_delta(night_model, apply_checkin, night_vars, ctx, rules_cfg)
-    compiled_bindings.update({"joint.night.hard_base", "joint.night.hard_teacher_limits", "system.hard_unavailability"})
-    if roster_enabled:
-        compiled_bindings.add("joint.night.checkin")
-    model_variables += len(night_model.Proto().variables)
-    model_constraints += len(night_model.Proto().constraints)
+    if mode not in {"course", "day"}:
+        night_model = cp_model.CpModel()
+        night_io = copy.deepcopy(io_cfg)
+        teacher_cfg = night_io.get("teacher_table") if isinstance(night_io.get("teacher_table"), Mapping) else {}
+        if teacher_cfg.get("path"):
+            teacher_cfg["path"] = str(_resolve(base_dir, teacher_cfg["path"]))
+            night_io["teacher_table"] = teacher_cfg
+        classes, cst, ts_map, male_heads, female_heads = read_teacher_table(night_io, rules_cfg)
+        days = list((rules_cfg.get("calendar") or {}).get("days") or [])
+        periods = list((rules_cfg.get("calendar") or {}).get("periods") or [])
+        night_vars = build_variables(night_model, classes, cst, days, periods)
+        night_vars.update(build_checkin_variables(night_model, male_heads, female_heads, days))
+        ctx = {
+            "classes": classes,
+            "cst": cst,
+            "ts": ts_map,
+            "male_heads": male_heads,
+            "female_heads": female_heads,
+            "days": days,
+            "periods": periods,
+        }
+        evidence["joint.night.hard_base"] = _apply_delta(night_model, apply_hard_base, night_vars, ctx, rules_cfg)
+        evidence["joint.night.hard_teacher_limits"] = _apply_delta(night_model, apply_hard_teacher_limits, night_vars, ctx, rules_cfg)
+        evidence["system.hard_unavailability"] = evidence.get("system.hard_unavailability", 0) + _apply_delta(
+            night_model, apply_hard_bans, night_vars, ctx, rules_cfg
+        )
+        if roster_enabled:
+            evidence["joint.night.checkin"] = _apply_delta(night_model, apply_checkin, night_vars, ctx, rules_cfg)
+        compiled_bindings.update({"joint.night.hard_base", "joint.night.hard_teacher_limits", "system.hard_unavailability"})
+        if roster_enabled:
+            compiled_bindings.add("joint.night.checkin")
+        model_variables += len(night_model.Proto().variables)
+        model_constraints += len(night_model.Proto().constraints)
 
     stats = {
         "model_variables": model_variables,
@@ -244,7 +263,7 @@ def _compile_contract_probe(
             model.Add(variables[(class_name, slot)] <= 1)
     model.Add(sum(variables.values()) >= 0)
 
-    roster_enabled = bool((effective_cfg.get("checkin") or {}).get("enabled", False))
+    roster_enabled = mode not in {"course", "day"} and bool((effective_cfg.get("checkin") or {}).get("enabled", False))
     evidence = {
         "system.calendar.active_slot_only": slot_count,
         "system.day.fixed_slot_integrity": 1,

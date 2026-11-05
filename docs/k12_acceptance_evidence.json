@@ -1,0 +1,178 @@
+{
+  "schema_version": "scheduler.k12_cross_school_evidence.v1",
+  "date": "2026-10-04",
+  "scope": "Local authenticated HTTP, isolated SQLite, independent Worker, real CP-SAT, independent Excel verification; no production deployment or external AI verification",
+  "python": "3.14.8",
+  "ortools": "9.15.6755",
+  "scenarios": [
+    {
+      "id": "primary",
+      "stage": "小学",
+      "classes": 2,
+      "slots_per_class": 20,
+      "solver_status": "OPTIMAL",
+      "verification": {
+        "hard_violations": [],
+        "assignments": 38,
+        "soft_penalty": 420
+      },
+      "coverage": [
+        "import_preview_confirmation",
+        "cycle_hours",
+        "cycle_hours",
+        "fixed_activity",
+        "subject_ban",
+        "teacher_conflict",
+        "teacher_unavailable",
+        "max_daily_lessons",
+        "soft_penalty",
+        "rule_confirmation",
+        "custom_blocks",
+        "excel_export",
+        "zip_export",
+        "empty_source_blocks",
+        "infeasible_without_relaxation_or_stale_export"
+      ]
+    },
+    {
+      "id": "junior",
+      "stage": "初中",
+      "classes": 3,
+      "slots_per_class": 25,
+      "solver_status": "OPTIMAL",
+      "verification": {
+        "hard_violations": [],
+        "assignments": 72,
+        "soft_penalty": 70
+      },
+      "coverage": [
+        "import_preview_confirmation",
+        "cycle_hours",
+        "class_overrides",
+        "fixed_activity",
+        "subject_ban",
+        "teacher_conflict",
+        "teacher_unavailable",
+        "max_daily_lessons",
+        "soft_penalty",
+        "rule_confirmation",
+        "custom_blocks",
+        "excel_export",
+        "zip_export",
+        "empty_source_blocks"
+      ]
+    },
+    {
+      "id": "senior",
+      "stage": "高中行政班",
+      "classes": 2,
+      "slots_per_class": 30,
+      "solver_status": "OPTIMAL",
+      "verification": {
+        "hard_violations": [],
+        "assignments": 58,
+        "soft_penalty": 0
+      },
+      "coverage": [
+        "import_preview_confirmation",
+        "cycle_hours",
+        "cycle_hours",
+        "fixed_activity",
+        "subject_ban",
+        "teacher_conflict",
+        "teacher_unavailable",
+        "max_daily_lessons",
+        "soft_penalty",
+        "rule_confirmation",
+        "custom_blocks",
+        "excel_export",
+        "zip_export",
+        "empty_source_blocks"
+      ]
+    }
+  ],
+  "coverage_matrix": {
+    "class_overrides": [
+      "junior"
+    ],
+    "custom_blocks": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "cycle_hours": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "empty_source_blocks": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "excel_export": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "fixed_activity": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "import_preview_confirmation": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "infeasible_without_relaxation_or_stale_export": [
+      "primary"
+    ],
+    "max_daily_lessons": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "rule_confirmation": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "soft_penalty": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "subject_ban": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "teacher_conflict": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "teacher_unavailable": [
+      "primary",
+      "junior",
+      "senior"
+    ],
+    "zip_export": [
+      "primary",
+      "junior",
+      "senior"
+    ]
+  },
+  "infeasible_case": {
+    "solver_status": "INFEASIBLE",
+    "conflicting_rule_id": "acceptance.block_shared_teacher",
+    "stale_schedule_not_reused": true,
+    "can_publish": false
+  },
+  "development_gate": {
+    "passed": 609,
+    "warnings": 37,
+    "result": "PASS"
+  }
+}

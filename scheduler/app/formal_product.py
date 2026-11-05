@@ -272,6 +272,7 @@ def parse_rule_v2_with_ai(
             known_teachers=teacher_names,
             known_subjects=subject_names,
             known_classes=class_names,
+            slot_context=slot_context,
         )
         draft["ai_used"] = False
         draft["ai_note"] = "AI 服务未启用，已使用本地安全解析器生成草案。"
@@ -406,6 +407,7 @@ def parse_rule_v2_with_ai(
             known_teachers=teacher_names,
             known_subjects=subject_names,
             known_classes=class_names,
+            slot_context=slot_context,
         )
         draft["ai_used"] = False
         draft["ai_note"] = f"AI 建模失败，已回退本地安全解析器：{exc}"
@@ -444,6 +446,7 @@ def _repair_allowlisted_model_rule(
         known_teachers=teacher_names,
         known_subjects=subject_names,
         known_classes=class_names,
+        slot_context=slot_context,
     )
     semantic_repairs: list[str] = []
     local_constraint_type = str((local.get("constraint") or {}).get("type") or "")

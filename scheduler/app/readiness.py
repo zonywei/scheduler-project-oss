@@ -36,10 +36,10 @@ RUN_DIR_PATTERN = re.compile(r"^run_\d{8}_\d{6}$")
 
 
 def build_solve_readiness(mode: str = "joint") -> dict[str, Any]:
-    normalized_mode = mode if mode in {"joint", "night"} else "joint"
+    normalized_mode = mode if mode in {"course", "day", "joint", "night"} else "joint"
     config_payload = load_effective_payload(normalized_mode)
     teacher_rows = list_teacher_subject_rows()
-    day_rules = load_day_rule_tables() if normalized_mode == "joint" else {}
+    day_rules = load_day_rule_tables() if normalized_mode in {"course", "day", "joint"} else {}
     academic_payload = load_academic_affairs_payload()
     conflicts = detect_rule_conflicts(config_payload.get("effective", {}), teacher_rows)
     readiness = build_readiness_payload(
@@ -54,11 +54,11 @@ def build_solve_readiness(mode: str = "joint") -> dict[str, Any]:
 
 
 def build_solve_readiness_preview(mode: str = "joint", fields: list[dict[str, Any]] | None = None) -> dict[str, Any]:
-    normalized_mode = mode if mode in {"joint", "night"} else "joint"
+    normalized_mode = mode if mode in {"course", "day", "joint", "night"} else "joint"
     preview = preview_rule_field_updates(fields or [])
     config_payload = _preview_config_payload(normalized_mode, preview.get("overrides", {}))
     teacher_rows = list_teacher_subject_rows()
-    day_rules = load_day_rule_tables() if normalized_mode == "joint" else {}
+    day_rules = load_day_rule_tables() if normalized_mode in {"course", "day", "joint"} else {}
     academic_payload = load_academic_affairs_payload()
     conflicts = detect_rule_conflicts(config_payload.get("effective", {}), teacher_rows)
     readiness = build_readiness_payload(
@@ -234,8 +234,9 @@ def build_readiness_payload(
     items: list[dict[str, Any]] = []
     items.extend(_config_items(config_payload))
     items.extend(_teacher_items(effective, teacher_rows, mode=mode))
-    if mode == "joint":
+    if mode in {"course", "day", "joint"}:
         items.extend(_day_rule_items(day_rule_tables))
+    if mode == "joint":
         items.extend(_duty_checkin_capacity_items(effective, teacher_rows, day_rule_tables))
     items.extend(_conflict_items(conflict_payload))
     items.extend(_academic_items(academic_payload, effective, teacher_rows))
@@ -399,6 +400,9 @@ def _teacher_items(effective: dict[str, Any], rows: list[dict[str, Any]], *, mod
                 "补齐主要学科教师，避免求解时可排课资源不足。",
             )
         )
+
+    if mode in {"course", "day"}:
+        return items
 
     evening = effective.get("evening", {}) if isinstance(effective, dict) else {}
     configured_subjects = _as_str_list(evening.get("subjects"))

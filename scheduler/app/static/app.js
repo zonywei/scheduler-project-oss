@@ -1,7 +1,7 @@
 const state = {
   view: "overview",
   accessRole: loadStored("scheduler.accessRole", "academic_admin"),
-  solveMode: "joint",
+  solveMode: "course",
   ruleMode: "all",
   ruleSearch: "",
   ruleLimit: 8,
@@ -313,6 +313,12 @@ async function loadAll({ silent = false } = {}) {
     } else {
       errors.push(result.reason?.message || String(result.reason));
     }
+  }
+  const importedHours = asArray(state.dayRules?.subject_hours);
+  const configuredMode = importedHours.some((row) => Object.hasOwn(row, "周期课时")) ? "course" : importedHours.length ? "joint" : state.solveMode;
+  if (configuredMode !== state.solveMode) {
+    state.solveMode = configuredMode;
+    state.readiness = await api(`/api/readiness?mode=${encodeURIComponent(configuredMode)}`).catch(() => state.readiness);
   }
   state.loading = false;
   $("lastUpdated").textContent = `同步于 ${new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`;
@@ -1409,6 +1415,8 @@ function renderSolveFormCard() {
       <div class="form-grid solve-basic-form">
         <label for="solveMode">排课范围</label>
         <select id="solveMode" data-control="solve-mode">
+          <option value="course" ${state.solveMode === "course" ? "selected" : ""}>按业务配置排课（自定义时间格与周期课时）</option>
+          <option value="day" ${state.solveMode === "day" ? "selected" : ""}>旧版课程排课</option>
           <option value="joint" ${state.solveMode === "joint" ? "selected" : ""}>全校课表（白天、晚自习和值班）</option>
           <option value="night" ${state.solveMode === "night" ? "selected" : ""}>只排晚自习和值班</option>
         </select>
@@ -1836,7 +1844,7 @@ function addBlankRow(kind) {
   } else if (kind === "day") {
     const rows = asArray(state.dayRules[state.selectedDayRule]);
     const columns = tableColumns(rows);
-    rows.push(Object.fromEntries((columns.length ? columns : ["时段节次", "星期一", "星期二", "星期三", "星期四", "星期五"]).map((col) => [col, ""])));
+    rows.push(Object.fromEntries((columns.length ? columns : (state.solveMode === "course" ? ({subject_hours: ["学科", "周期课时"], class_overrides: ["班级", "学科", "周期课时"], fixed_slots: ["作用范围", "班级", "星期", "时段", "节次", "学科"], subject_bans: ["学科", "禁排星期", "禁排时段", "节次"]}[state.selectedDayRule] || ["时段节次", "星期一", "星期二", "星期三", "星期四", "星期五"]) : ["时段节次", "星期一", "星期二", "星期三", "星期四", "星期五"])).map((col) => [col, ""])));
     state.dayRules[state.selectedDayRule] = rows;
   } else if (kind === "academic") {
     const tables = asObject(state.academic?.data?.tables);
